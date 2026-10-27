@@ -1,0 +1,242 @@
+{
+ "beasts": {
+  "lion": {
+   "sec": "head",
+   "name": "Lion with Eagle’s Wings",
+   "ref": "Daniel 7:4",
+   "verse": "“The first was like a lion, and had eagle’s wings … and a man’s heart was given to it.”",
+   "text": "The first beast parallels the head of gold: Babylon, whose gates were lined with lions and whose king was humbled and given back a man’s heart (Dan 4).",
+   "relief": "lion",
+   "icon": "lion"
+  },
+  "bear": {
+   "sec": "chest",
+   "name": "Bear Raised on One Side",
+   "ref": "Daniel 7:5",
+   "verse": "“It raised up itself on one side, and it had three ribs in the mouth of it between the teeth of it.”",
+   "text": "Paralleling the silver: Medo-Persia, with the Persian side rising higher. The three ribs are often read as Lydia, Babylon and Egypt.",
+   "relief": "bear",
+   "icon": "bear"
+  },
+  "ram": {
+   "sec": "chest",
+   "name": "Ram with Two Horns",
+   "ref": "Daniel 8:3–4, 20",
+   "verse": "“The ram which thou sawest having two horns are the kings of Media and Persia.”",
+   "text": "Daniel 8 names it outright. The higher horn that came up last is Persia, rising above Media.",
+   "relief": "ramgoat",
+   "icon": "ram"
+  },
+  "leopard": {
+   "sec": "belly",
+   "name": "Leopard with Four Heads",
+   "ref": "Daniel 7:6",
+   "verse": "“Like a leopard, which had upon the back of it four wings of a fowl; the beast had also four heads.”",
+   "text": "Paralleling the bronze: Greece. Four wings for Alexander’s speed; four heads for the four kingdoms his generals carved out.",
+   "relief": "leopard",
+   "icon": "leopard"
+  },
+  "goat": {
+   "sec": "belly",
+   "name": "Goat with a Notable Horn",
+   "ref": "Daniel 8:5–8, 21",
+   "verse": "“The rough goat is the king of Grecia: and the great horn … is the first king.”",
+   "text": "Named in the text as Greece. The great horn (Alexander) is broken, and four horns rise in its place.",
+   "relief": "ramgoat",
+   "icon": "goat"
+  },
+  "fourth": {
+   "sec": "legs",
+   "name": "The Dreadful Beast",
+   "ref": "Daniel 7:7–8, 23–24",
+   "verse": "“Dreadful and terrible … it had great iron teeth … and it had ten horns.”",
+   "text": "Paralleling the iron legs: Rome. Its ten horns echo the ten toes, and a little horn rises among them, a power read in very different ways by different schools.",
+   "relief": "fourth",
+   "icon": "fourth"
+  }
+ },
+ "codex": {
+  "7": {
+   "title": "Seven Times",
+   "refs": "Daniel 4:16, 23, 25, 32",
+   "lead": "Nebuchadnezzar is driven from men “till seven times pass over him.”",
+   "sda": "Seven literal years of the king’s madness, a lesson that “the most High ruleth in the kingdom of men” (Dan 4:17). Seven also marks completeness throughout Scripture. (A few historicists stretched it to 2,520 years, though this is not widely held.)",
+   "others": [
+    [
+     "Preterist / critical",
+     "Seven literal years or seasons in a court story about the king’s humbling; some link it to Nabonidus’ ten years at Tema."
+    ],
+    [
+     "Futurist / dispensational",
+     "Seven literal years for Nebuchadnezzar; sometimes seen as a picture of Gentile pride before God."
+    ]
+   ],
+   "sdaLabel": "Historicist"
+  },
+  "10": {
+   "title": "Ten Toes, Ten Horns",
+   "refs": "Daniel 2:41–42; 7:7, 20, 24",
+   "lead": "“The ten horns out of this kingdom are ten kings that shall arise.”",
+   "sda": "The kingdoms that rose from western Rome’s breakup, commonly listed as the Ostrogoths, Visigoths, Franks, Vandals, Suevi, Alamanni, Anglo-Saxons, Heruli, Lombards and Burgundians. Three were “plucked up” before the little horn (Dan 7:8): the Heruli, Vandals and Ostrogoths.",
+   "others": [
+    [
+     "Preterist",
+     "Ten Seleucid rulers before Antiochus IV Epiphanes, the little horn."
+    ],
+    [
+     "Futurist / dispensational",
+     "A future ten-nation confederacy, a revived Roman empire that the Antichrist will lead."
+    ]
+   ],
+   "sdaLabel": "Historicist"
+  },
+  "12": {
+   "title": "Twelve Months",
+   "refs": "Daniel 4:29–31",
+   "lead": "“At the end of twelve months he walked in the palace of the kingdom of Babylon.”",
+   "sda": "A literal year of grace. Daniel had urged the king to break off his sins (Dan 4:27); the twelve months show God’s patience before judgment falls.",
+   "others": [
+    [
+     "Most other views",
+     "Read it the same way: a literal year between the warning and the king’s fall."
+    ]
+   ],
+   "sdaLabel": "Historicist"
+  },
+  "42": {
+   "title": "Forty-Two Months",
+   "refs": "Revelation 11:2; 13:5; Daniel 7:25; 12:7",
+   "lead": "42 months = 1,260 days = “a time, times and half a time.”",
+   "sda": "Using the day-year principle (Num 14:34; Ezek 4:6), the 42 months equal the 1,260 years of papal supremacy, AD 538–1798, the same span as Daniel 7:25 and Revelation 12:6, 14.",
+   "others": [
+    [
+     "Preterist",
+     "About 3½ years of persecution: Antiochus IV (167–164 BC), or Nero and the Jewish war in Revelation."
+    ],
+    [
+     "Futurist / dispensational",
+     "The final 3½ years of a future seven-year tribulation under the Antichrist."
+    ]
+   ],
+   "sdaLabel": "Historicist (day-year)"
+  },
+  "70": {
+   "title": "Seventy Weeks",
+   "refs": "Daniel 9:24–27; Jeremiah 25:11; Ezra 7",
+   "lead": "“Seventy weeks are determined upon thy people … unto the Messiah the Prince.”",
+   "sda": "490 years counted from Artaxerxes’ decree of 457 BC (Ezra 7): 69 weeks reach AD 27 and Jesus’ baptism, He is “cut off” in the midst of the 70th week (AD 31), and the period closes in AD 34 with Stephen’s stoning and the gospel going to the Gentiles. The 490 years are the first part of the 2,300 days.",
+   "others": [
+    [
+     "Preterist / critical",
+     "The weeks end in the crisis of Antiochus IV around 164 BC; the anointed one cut off is often taken as the high priest Onias III (171 BC)."
+    ],
+    [
+     "Dispensational",
+     "69 weeks run to the Messiah (often 444 BC to AD 33 on 360-day years); then a gap, the church age; the 70th week is a future seven-year tribulation."
+    ],
+    [
+     "Other historicists",
+     "Similar to the Adventist count, with start dates of 458/457 BC or 445/444 BC."
+    ]
+   ],
+   "sdaLabel": "Historicist (day-year)"
+  },
+  "1260": {
+   "title": "1,260 Days",
+   "refs": "Daniel 7:25; 12:7; Revelation 11:3; 12:6, 14; 13:5",
+   "lead": "“They shall be given into his hand until a time and times and the dividing of time.”",
+   "sda": "1,260 years of papal dominance: from AD 538, when the Ostrogoths were driven from Rome and Justinian’s decree took effect, to 1798, when General Berthier took Pope Pius VI captive.",
+   "others": [
+    [
+     "Preterist",
+     "Roughly 3½ years of Antiochus IV’s persecution of the Jews, 167–164 BC."
+    ],
+    [
+     "Futurist / dispensational",
+     "The literal 3½-year reign of a future Antichrist."
+    ],
+    [
+     "Earlier Protestant historicists",
+     "Applied the 1,260 years to the papacy too, with various start dates."
+    ]
+   ],
+   "sdaLabel": "Historicist (day-year)"
+  },
+  "2300": {
+   "title": "2,300 Days",
+   "refs": "Daniel 8:14; 9:24–25; Leviticus 16; Hebrews 8–9",
+   "lead": "“Unto two thousand and three hundred days; then shall the sanctuary be cleansed.”",
+   "sda": "2,300 years from 457 BC to 1844, sharing the start of the 70 weeks. In 1844 Christ began the final, pre-Advent phase of His ministry in the heavenly sanctuary, the antitype of the Day of Atonement. William Miller had expected the Second Coming on 22 October 1844; the Great Disappointment led to a renewed study of the sanctuary.",
+   "others": [
+    [
+     "Preterist / critical",
+     "2,300 evenings and mornings = 1,150 days of the desecrated temple under Antiochus IV, ending with its rededication in 164 BC (Hanukkah). Some count 2,300 full days, 171–164 BC."
+    ],
+    [
+     "Futurist / dispensational",
+     "Fulfilled in Antiochus as a type, with a further fulfilment in a future Antichrist and a rebuilt temple."
+    ]
+   ],
+   "sdaLabel": "Historicist (day-year)"
+  }
+ },
+ "guides": {
+  "historian": {
+   "name": "The Historian",
+   "hint": "Sources, dates, debates",
+   "lines": [
+    "Carchemish, 605 BC: the Babylonian Chronicle records Nebuchadnezzar’s rout of Egypt. Within weeks his father died and he took the throne.",
+    "Babylonian texts and 2 Kings agree: after an 18-month siege Jerusalem fell in 587 or 586 BC. The exact year is still debated.",
+    "The Nabonidus Chronicle says Babylon fell without a battle in October 539 BC. The Cyrus Cylinder is royal propaganda, but it confirms that deported peoples were sent home.",
+    "In 334 BC Alexander crossed the Hellespont. Persia had ruled from the Indus to Egypt for two centuries.",
+    "At Issus in 333 BC Darius III fled the field. Arrian and Curtius describe it; the figures they give are inflated.",
+    "Tyre, Egypt, then Gaugamela in 331 BC. Babylon opened its gates; a Babylonian astronomical diary even notes the battle.",
+    "Alexander died in Babylon in 323 BC. Within a generation his empire had hardened into the Ptolemaic, Seleucid, Antigonid and other kingdoms.",
+    "At Pydna in 168 BC the legion beat the phalanx. Polybius saw it as the moment Rome became master of the Mediterranean.",
+    "Pompey entered the Temple in 63 BC, and Josephus records the shock. From then on Judea was a Roman client.",
+    "Actium and the fall of Alexandria in 30 BC ended the last Hellenistic kingdom. Egypt became Augustus’ personal province.",
+    "Josephus, an eyewitness, describes the burning of the Temple in AD 70. The Arch of Titus in Rome still shows the spoils.",
+    "After Theodosius died in AD 395 the empire was never again ruled as one. Historians debate how ‘final’ the split was.",
+    "In AD 476 Odoacer sent the imperial regalia to Constantinople. Contemporaries barely noticed; later writers made it the end of Rome."
+   ]
+  },
+  "daniel": {
+   "name": "Daniel",
+   "hint": "Prophet in exile, reverent",
+   "lines": [
+    "I was a youth when the king of Babylon came against Jerusalem, and I was carried away with the vessels of God's house. Yet I knew this: the God of heaven removes kings and sets up kings.",
+    "Word came to us by the river that the holy city was burned. I opened my window toward Jerusalem and prayed, for the Lord had not forgotten His people.",
+    "I stood in Belshazzar's hall and read the writing: numbered, weighed, divided. That night the gold fell, and the silver rose, as God had shown the king.",
+    "Long after my days, I saw it in vision: a ram with two horns pushing west, north and south. Then a goat came from the west, not touching the ground.",
+    "The goat ran at the ram in the fury of his power and broke his two horns. No one could deliver the ram out of his hand.",
+    "I saw a leopard with four wings of a fowl, and dominion was given to it. Bronze now ruled over all the earth.",
+    "When the great horn was strong, it was broken. Four arose in its place, toward the four winds of heaven, but not with his power.",
+    "Then I saw a fourth beast, dreadful and terrible, with great iron teeth. It devoured and broke in pieces, and it was diverse from all before it.",
+    "The iron set its foot on the glorious land. Still I was told: seal up the vision, for the time appointed is in God's hand.",
+    "The last kingdom of the goat passed into the hand of iron. Not one word of the dream had failed.",
+    "It was shown to me that Messiah would be cut off, and that the people of a prince to come would destroy the city and the sanctuary. So the house of God was burned once more.",
+    "The legs of iron stood apart, one in the east and one in the west. Strong still, yet already dividing.",
+    "Iron mixed with miry clay: they shall mingle, but not cleave together. And in the days of these kings, the God of heaven shall set up a kingdom that shall never be destroyed."
+   ]
+  },
+  "nebuchadnezzar": {
+   "name": "Nebuchadnezzar",
+   "hint": "The proud king who dreamed it",
+   "lines": [
+    "At Carchemish I broke Pharaoh's army. From the Euphrates to the Brook of Egypt, the nations bowed to me. I am the head of gold.",
+    "Jerusalem rebelled, so I burned its temple and carried its people to my city. Is not this great Babylon, that I have built by the might of my power?",
+    "I lived to see my pride broken; seven times passed over me in the field, until I knew the Most High rules. Now my heir is weighed and found wanting, and Persia takes my city in a single night.",
+    "From the dust I watch Persian kings sit in my palaces. Silver, lesser than gold, just as the Hebrew said.",
+    "A young king from the west comes against the silver. Even Persia, which humbled my house, trembles before him.",
+    "Bronze tramples silver at Gaugamela, and my Babylon opens its gates to a Greek. Kingdoms pass from hand to hand, and none of them is mine.",
+    "The conqueror of the world died in my palace in Babylon, not yet thirty-three. I too thought my kingdom eternal.",
+    "Iron rises in the west, stronger than any metal I knew. It breaks in pieces and subdues all things.",
+    "The iron enters Jerusalem, the city I once burned. Every empire of my dream has marched across that little land.",
+    "Egypt, the last of the Greek kingdoms, falls to Rome. The great image stands nearly whole, head to legs.",
+    "Rome burns the house of the Hebrew God, as I once did. But what hand can harm the God who humbled me?",
+    "Even iron splits in two, east and west. I dreamed of two legs.",
+    "Now come the feet, iron mixed with clay, kingdoms that will not hold. Then a stone cut without hands. I praise and extol the King of heaven, for all His works are truth."
+   ]
+  }
+ }
+}

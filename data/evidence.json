@@ -1,0 +1,167 @@
+{
+ "_note": "Keyed by event year (negative = BC). confidence: high | medium | debated. Keep claims conservative; cite primary sources and note disagreements.",
+ "-605": {
+  "confidence": "high",
+  "summary": "The battle of Carchemish and Nebuchadnezzar's accession are among the best-dated events of the period.",
+  "sources": [
+   {"name": "Babylonian Chronicle (ABC 5, 'Chronicle of the Early Years of Nebuchadnezzar'), British Museum BM 21946", "note": "Records the crown prince defeating the Egyptian army at Carchemish, Nabopolassar's death and Nebuchadnezzar's accession in 605 BC."},
+   {"name": "Jeremiah 46:2", "note": "Dates the Egyptian defeat at Carchemish to the 4th year of Jehoiakim."},
+   {"name": "Excavations at Carchemish (Woolley, 1910s; Turco-Italian team, 2011–)", "note": "Destruction layers and Egyptian-related finds consistent with a violent end c. 605 BC."}
+  ],
+  "views": [
+   "Daniel 1:1 dates a siege of Jerusalem to Jehoiakim's 3rd year; many scholars see a conflict with Jeremiah's dating, while others explain it by Babylonian accession-year reckoning.",
+   "The Chronicle does not name Daniel or a deportation in 605; that detail rests on the biblical text."
+  ]
+ },
+ "-586": {
+  "confidence": "high",
+  "summary": "The Babylonian conquest of Judah is confirmed by chronicles, letters and archaeology. The exact year of the temple's destruction is debated (587 vs 586 BC).",
+  "sources": [
+   {"name": "Babylonian Chronicle (ABC 5)", "note": "Records the capture of 'the city of Judah' on 2 Adar, 597 BC and the appointment of a new king. The chronicle breaks off before 587/586."},
+   {"name": "Lachish Letters (ostraca, c. 588–586 BC)", "note": "Letter 4 says the writer can no longer see the signals of Azekah, which fits the final Babylonian campaign (cf. Jeremiah 34:7)."},
+   {"name": "Jerusalem burn layers (City of David, 'Burnt Room', 'House of Bullae')", "note": "Destruction debris, arrowheads and clay seals from the early 6th century BC."},
+   {"name": "Jehoiachin ration tablets (Babylon)", "note": "List rations for 'Yaukin, king of Judah' in exile."}
+  ],
+  "views": [
+   "587 BC vs 586 BC depends on how the regnal years of Zedekiah are reckoned.",
+   "Scholars debate the scale of the exile and how far the land was depopulated."
+  ]
+ },
+ "-539": {
+  "confidence": "high",
+  "summary": "Babylon fell to Cyrus in October 539 BC. Babylonian and Persian sources agree that it was taken with little fighting.",
+  "sources": [
+   {"name": "Nabonidus Chronicle (ABC 7), British Museum BM 35382", "note": "Battle at Opis, then 'the army of Cyrus entered Babylon without battle' (16 Tashritu); Cyrus arrives days later."},
+   {"name": "Cyrus Cylinder, British Museum BM 90920", "note": "Persian royal propaganda that presents Cyrus as chosen by Marduk and describes the return of displaced gods and peoples."},
+   {"name": "Herodotus 1.191; Xenophon, Cyropaedia 7.5", "note": "Later Greek accounts of the city taken while the Euphrates was diverted and during a festival. Treated cautiously."},
+   {"name": "Daniel 5", "note": "Belshazzar's feast. Belshazzar is attested in cuneiform as Nabonidus's son and regent (Verse Account of Nabonidus; Nabonidus Cylinder)."}
+  ],
+  "views": [
+   "Daniel 5:31's 'Darius the Mede' is not identified in extra-biblical sources. Proposals include Gubaru/Gobryas or Cyrus himself; many critical scholars see a literary figure.",
+   "The Cylinder does not mention Jews; linking it to Ezra 1 is plausible but indirect.",
+   "Traditional reading: the silver chest = Medo-Persia. Critical reading: Media and Persia are separate kingdoms (2nd and 3rd)."
+  ]
+ },
+ "-334": {
+  "confidence": "high",
+  "summary": "Alexander crossed the Hellespont in spring 334 BC and defeated the Persian satraps at the Granicus.",
+  "sources": [
+   {"name": "Arrian, Anabasis 1.11–16", "note": "The most detailed account, based on Ptolemy and Aristobulus (written c. AD 130–160)."},
+   {"name": "Plutarch, Life of Alexander 16; Diodorus 17.19–21", "note": "Differ on details such as timing (evening vs dawn attack)."}
+  ],
+  "views": [
+   "All narrative accounts were written centuries later, using lost contemporary sources.",
+   "Troop numbers are uncertain and often inflated."
+  ]
+ },
+ "-333": {
+  "confidence": "high",
+  "summary": "At Issus (November 333 BC), Alexander defeated Darius III in person. Darius fled, leaving his family behind.",
+  "sources": [
+   {"name": "Arrian 2.6–12; Curtius Rufus 3.8–11; Plutarch, Alexander 20", "note": "Agree on the outcome. They differ on numbers and on details of the battle."},
+   {"name": "Alexander Mosaic, Pompeii (c. 100 BC, after an earlier Greek painting)", "note": "Shows Alexander confronting Darius, probably at Issus or Gaugamela."}
+  ],
+  "views": [
+   "The exact battlefield river (Pinarus) is debated: the Payas or the Deli Çay."
+  ]
+ },
+ "-331": {
+  "confidence": "high",
+  "summary": "Gaugamela (1 October 331 BC) broke the Achaemenid army. Babylon opened its gates to Alexander soon after.",
+  "sources": [
+   {"name": "Babylonian Astronomical Diary (BM 36761 + 36390)", "note": "A contemporary cuneiform record: a lunar eclipse 11 days before the battle, the defeat of Darius's army, and Alexander's entry into Babylon."},
+   {"name": "Arrian 3.7–15; Plutarch, Alexander 31–33; Diodorus 17.56–61", "note": "Narrative accounts of the battle."}
+  ],
+  "views": [
+   "The eclipse of 20 September 331 BC dates the battle firmly.",
+   "Traditional reading: the bronze belly = Greece/Alexander. In the critical four-kingdom scheme, Greece is the 4th (iron) kingdom."
+  ]
+ },
+ "-323": {
+  "confidence": "high",
+  "summary": "Alexander died in Babylon in June 323 BC. His generals fought for decades; after Ipsus (301 BC) the empire settled into major successor kingdoms.",
+  "sources": [
+   {"name": "Babylonian Astronomical Diary (BM 45962)", "note": "Records 'the king died' on 29 Aiaru (10/11 June 323 BC)."},
+   {"name": "Arrian 7.24–28; Plutarch, Alexander 75–77; Diodorus 18–20", "note": "Death narratives and the wars of the Diadochi."}
+  ],
+  "views": [
+   "Daniel 7:6 and 8:8, 8:22 describe four heads or horns. They are usually linked to Cassander, Lysimachus, Seleucus and Ptolemy after 301 BC; the split was gradual, not immediate.",
+   "The cause of death (fever, malaria, typhoid, poison) is still debated."
+  ]
+ },
+ "-168": {
+  "confidence": "high",
+  "summary": "At Pydna (168 BC), Rome destroyed the Macedonian kingdom of Perseus. The same year, Rome forced Antiochus IV out of Egypt (the 'Day of Eleusis').",
+  "sources": [
+   {"name": "Livy 44.36–42; Plutarch, Aemilius Paullus 16–22", "note": "Accounts of the battle; Polybius (a contemporary) survives only in fragments."},
+   {"name": "Pillar monument of Aemilius Paullus, Delphi", "note": "A surviving victory monument with a relief of the battle."},
+   {"name": "Polybius 29.27", "note": "Popillius Laenas draws a circle around Antiochus IV. Often linked to Daniel 11:30 ('ships of Kittim')."}
+  ],
+  "views": [
+   "Critical scholars date Daniel's final composition to c. 167–164 BC, under Antiochus IV. Traditional scholars hold a 6th-century authorship with predictive prophecy."
+  ]
+ },
+ "-63": {
+  "confidence": "high",
+  "summary": "Pompey took Jerusalem in 63 BC and entered the Holy of Holies, ending Hasmonean independence.",
+  "sources": [
+   {"name": "Josephus, Antiquities 14.4; Jewish War 1.7", "note": "The siege, the entry into the sanctuary, and Pompey leaving the treasury untouched."},
+   {"name": "Psalms of Solomon 2, 8, 17", "note": "A near-contemporary Jewish response to the conquest."},
+   {"name": "Cicero, Pro Flacco 67", "note": "Mentions Pompey not touching the temple treasures."}
+  ],
+  "views": [
+   "Josephus wrote over a century later and relied partly on Nicolaus of Damascus and Strabo."
+  ]
+ },
+ "-30": {
+  "confidence": "high",
+  "summary": "After Actium (31 BC), Octavian took Alexandria in 30 BC; Cleopatra VII died, and the last Hellenistic kingdom became a Roman province.",
+  "sources": [
+   {"name": "Res Gestae Divi Augusti 27", "note": "Augustus: 'I added Egypt to the empire of the Roman people.'"},
+   {"name": "Plutarch, Antony 76–86; Cassius Dio 51", "note": "Narrative of the fall of Alexandria and Cleopatra's death."},
+   {"name": "'Aegypto capta' coinage (28 BC)", "note": "Roman coins commemorating the capture of Egypt."}
+  ],
+  "views": [
+   "The asp story is reported by ancient writers but its details are uncertain."
+  ]
+ },
+ "70": {
+  "confidence": "high",
+  "summary": "Titus's legions destroyed Jerusalem and the Second Temple in AD 70.",
+  "sources": [
+   {"name": "Josephus, Jewish War 6", "note": "An eyewitness account by a participant with the Roman side."},
+   {"name": "Arch of Titus, Rome (c. AD 81)", "note": "Relief of soldiers carrying the menorah and temple spoils in the triumph."},
+   {"name": "Burnt House and Herodian street collapse, Jerusalem", "note": "Burn layers, a spear and fallen Temple Mount stones from AD 70."},
+   {"name": "Iudaea Capta coinage", "note": "Vespasian's victory coins."}
+  ],
+  "views": [
+   "Josephus's casualty figures are widely considered exaggerated.",
+   "Daniel 9:26 ('shall destroy the city and the sanctuary') is read by many traditional interpreters as AD 70; critical scholars read it of Antiochus IV in 167 BC."
+  ]
+ },
+ "395": {
+  "confidence": "high",
+  "summary": "On Theodosius I's death in 395, the empire was permanently divided between his sons Arcadius (East) and Honorius (West).",
+  "sources": [
+   {"name": "Zosimus, New History 4.59–5.1; Orosius 7.36", "note": "Accounts of the succession."},
+   {"name": "Notitia Dignitatum (c. 400)", "note": "An administrative list showing separate Eastern and Western commands."}
+  ],
+  "views": [
+   "Earlier splits existed (the Tetrarchy, AD 293); 395 is when the division became lasting.",
+   "Many traditional interpreters read the two iron legs as East and West. Others see the legs as a pair without a specific meaning."
+  ]
+ },
+ "476": {
+  "confidence": "medium",
+  "summary": "Odoacer deposed Romulus Augustulus in 476 and sent the imperial regalia to Constantinople. The date is symbolic: the West had already split into kingdoms.",
+  "sources": [
+   {"name": "Anonymus Valesianus 8.38; Jordanes, Getica 46; Marcellinus Comes", "note": "Report the deposition. Marcellinus (6th century) first frames 476 as the end of the Western Empire."},
+   {"name": "Malchus fr. 14", "note": "The Senate's embassy to Zeno saying one emperor was enough."}
+  ],
+  "views": [
+   "Julius Nepos, recognised by the East, claimed the title until 480; 480 is another possible end date.",
+   "Historians debate 'fall' versus 'transformation' (e.g. Ward-Perkins vs Brown).",
+   "The iron-and-clay feet are read as the fragmented kingdoms of Europe (traditional), the Ptolemaic–Seleucid marriages of Daniel 11:6, 17 (critical), or an end-time power still to come (futurist)."
+  ]
+ }
+}

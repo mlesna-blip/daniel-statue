@@ -1,0 +1,51 @@
+{
+ "lon": [
+  10,
+  75
+ ],
+ "lat": [
+  20,
+  45
+ ],
+ "hm": [
+  2048,
+  934
+ ],
+ "terr": [
+  1024,
+  467
+ ],
+ "territories": {
+  "babylon": {
+   "metal": "gold"
+  },
+  "persia": {
+   "metal": "silver"
+  },
+  "alexander": {
+   "metal": "bronze"
+  },
+  "diadochi": {
+   "metal": "bronze"
+  },
+  "rome200": {
+   "metal": "iron"
+  },
+  "rome100": {
+   "metal": "iron"
+  },
+  "rome1": {
+   "metal": "iron"
+  },
+  "rome100ad": {
+   "metal": "iron"
+  },
+  "rome400": {
+   "metal": "iron"
+  },
+  "kingdoms": {
+   "metal": "clay"
+  }
+ },
+ "heightEncoding": "R*256+G over 65535 -> hn=v*1.15-0.15 ; hn*6000 m on land; B=land mask"
+}
