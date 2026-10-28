@@ -646,14 +646,14 @@ body.presenting #coGlow, body.presenting #btGlow, body.presenting #ltc, body.pre
   /* history: the card becomes a bottom sheet above the controls */
   #hist .card { left: 8px !important; right: 8px !important; width: auto !important; bottom: 168px !important; max-height: 44vh !important; overflow-y: auto !important; }
   #hist .card .c-relief { height: 74px !important; } #hist .card .c-title { font-size: 19px !important; } #hist .card .c-body { font-size: 14.5px !important; }
-  #hist .evidence { left: 8px !important; right: 8px !important; width: auto !important; top: 96px !important; max-height: calc(100vh - 290px) !important; }
+  #hist .evidence { left: 8px !important; right: 8px !important; width: auto !important; top: 104px !important; max-height: calc(100vh - 290px) !important; }
   #hist .h-timeline { left: 8px !important; right: 8px !important; width: auto !important; bottom: 74px !important; }
   #hist .h-timeline .lbl, #hist .h-timeline .y { display: none; } #hist .h-timeline .mark.on .y { display: block; }
   #hist .h-ctrl.v9 { left: 10px !important; bottom: 12px !important; width: auto !important; flex-wrap: nowrap !important; gap: 6px !important; }
   #hist .h-ctrl.v9 .pp { width: 46px !important; height: 46px !important; } #hist .h-ctrl.v9 .pp-state { display: none !important; }
   #hist .h-ctrl.v9 .dd { order: 0 !important; }
   #hist .h-year { font-size: 26px !important; bottom: 128px !important; }
-  #tale, #srcpan { right: 8px !important; left: 8px !important; width: auto !important; top: 96px !important; transform: none !important; max-height: calc(100vh - 170px); overflow-y: auto; }
+  #tale, #srcpan { right: 8px !important; left: 8px !important; width: auto !important; top: 104px !important; transform: none !important; max-height: calc(100vh - 170px); overflow-y: auto; }
   #quiz .qz-tab { width: calc(100vw - 20px) !important; padding: 18px 16px 16px !important; } .qz-q { font-size: 16px !important; } .qz-ill { height: 96px !important; } .qz-ill img { max-height: 96px !important; }
   #codex, #dtab, #btab { left: 8px !important; right: 8px !important; width: auto !important; max-height: calc(100vh - 120px); overflow-y: auto; }
   #presenter .pr-text { bottom: 20px; width: calc(100vw - 20px); padding: 14px 16px 16px; } #presenter .pr-title { font-size: 24px; } #presenter .pr-verse { font-size: 18px; } #presenter .pr-line { font-size: 15px; } #presenter .pr-ref { font-size: 11px; }
@@ -917,3 +917,93 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
 /* Narrator dropdown visible in history */
 #hist .h-ctrl .dd-narr, #hist .dd.dd-narr, #hist .h-ctrl .dd { display: block !important; opacity: 1 !important; }
 #vctrl .dd-narr { display: block; }
+
+
+/* ===== v13c mobile: icon stack under presenter, grouped ===== */
+@media (max-width: 600px), (max-height: 450px) and (orientation: landscape) {
+  /* Presenter stays top-right */
+  #presenter-btn {
+    top: 52px !important; right: 10px !important;
+    width: 36px !important; height: 36px !important;
+    z-index: 12 !important;
+  }
+  /* Tools stack moves under presenter (no longer bottom / timeline) */
+  #tools.v10,
+  #tools {
+    top: 104px !important;
+    bottom: auto !important;
+    right: 10px !important;
+    left: auto !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    gap: 6px !important; /* within-group gap */
+    z-index: 11 !important;
+  }
+  body.history #tools.v10,
+  body.history #tools {
+    top: 104px !important;
+    bottom: auto !important;
+  }
+  #tools .clay-btn,
+  #tools.v10 .clay-btn {
+    min-width: 0 !important; width: 40px !important; height: 40px !important;
+    padding: 0 !important; justify-content: center !important;
+  }
+  #tools .clay-btn b, #tools .clay-btn span { display: none !important; }
+
+  /* Group A: Codex + Tablet + Quiz (tight). Hide share/statue/tales from the mobile chrome clutter if present — keep tales with the group as 4th sibling. */
+  #tools #share { display: none !important; } /* more menu not needed in the top chrome */
+  #tools #statue-btn { display: none !important; }
+
+  /* Double gap before the codex group (= after presenter): tools already starts at 96px under 52+36 presenter */
+
+  /* Within tools, order: codex, tablet, quiz, tales. Double margin before tales? No — user said codex-tablet-quiz one group. Keep tales in same group. */
+  #tools #codex-btn { order: 1; margin: 0 !important; }
+  #tools #dtab-btn { order: 2; margin: 0 !important; }
+  #tools #quiz-btn { order: 3; margin: 0 !important; }
+  #tools #tales-btn { order: 4; margin: 0 !important; }
+
+  /* Group C: Event — own group below tools, double gap (~12px within → 24px between groups) */
+  #ev-sheet-btn {
+    position: fixed !important;
+    top: auto !important;
+    /* place just under the tools stack: presenter 52+36 + gap24 + 4*40+3*6 ≈ 96+24+178 ≈ 274... use sticky under tools via top calc */
+    top: calc(104px + (40px * 4) + (6px * 3) + 12px) !important; /* tools + 2× gap */ /* under 4 icons + within gaps + double group gap */
+    right: 10px !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 40px !important; height: 40px !important;
+    min-width: 0 !important; padding: 0 !important;
+    z-index: 11 !important;
+    display: none; /* history-only via existing rule */
+  }
+  body.history #ev-sheet-btn { display: flex !important; align-items: center; justify-content: center; }
+  /* When tales hidden count differs — if only 3 icons (no tales visible somehow) the calc still leaves room */
+
+  /* Landscape: tighter top chrome under modes row */
+}
+@media (max-height: 450px) and (orientation: landscape) {
+  #presenter-btn { top: 44px !important; right: 10px !important; width: 32px !important; height: 32px !important; }
+  #tools.v10, #tools {
+    top: 82px !important; right: 10px !important; bottom: auto !important;
+    flex-direction: column !important; gap: 5px !important;
+  }
+  #tools .clay-btn, #tools.v10 .clay-btn { width: 34px !important; height: 34px !important; }
+  #ev-sheet-btn {
+    top: calc(82px + (34px * 4) + (5px * 3) + 20px) !important;
+    right: 10px !important; bottom: auto !important;
+    width: 34px !important; height: 34px !important;
+  }
+}
+@media (max-width: 600px) {
+  #presenter-btn { top: 52px !important; right: 10px !important; }
+  /* Override earlier bottom placements from v12/v13 mobile pass */
+  #tools.v10 { right: 10px !important; bottom: auto !important; top: 104px !important; }
+}
+
+
+@media (max-width: 600px), (max-height: 450px) and (orientation: landscape) {
+  #talelist { right: 56px !important; top: 104px !important; bottom: auto !important; }
+  #dtab { right: 56px !important; top: 104px !important; bottom: auto !important; max-height: calc(100vh - 110px); }
+  #codex { /* full screen overlay already */ }
+}
