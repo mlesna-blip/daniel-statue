@@ -41,7 +41,7 @@ export async function createHistory({ world, statue, director, params }) {
       <input type="range" min="0" max="${N - 1}" step="0.001" value="0" aria-label="History timeline"></footer>
     </div>`);
   document.body.appendChild(root);
-  const sheetBtn = document.createElement('button'); sheetBtn.id = 'ev-sheet-btn'; sheetBtn.className = 'clay-btn'; sheetBtn.innerHTML = '<b>Event</b>'; sheetBtn.title = 'Open event card';
+  const sheetBtn = document.createElement('button'); sheetBtn.id = 'ev-sheet-btn'; sheetBtn.className = 'clay-btn'; sheetBtn.innerHTML = '<svg viewBox="0 0 24 24" class="qi" aria-hidden="true"><path d="M7 3.5h8.5c1.2 0 2.2 1 2.2 2.2v12.6c0 1.2-1 2.2-2.2 2.2H7c-1.2 0-2.2-1-2.2-2.2V5.7C4.8 4.5 5.8 3.5 7 3.5z"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h5"/></svg><b>Event</b>'; sheetBtn.title = 'Open event card'; sheetBtn.type = 'button'; sheetBtn.setAttribute('aria-label', 'Open event card');
   const strip = document.createElement('div'); strip.className = 'ev-strip'; strip.id = 'ev-strip';
   document.body.appendChild(sheetBtn); document.body.appendChild(strip);
 

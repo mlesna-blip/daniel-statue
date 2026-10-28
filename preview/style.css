@@ -895,7 +895,7 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
   body::after {
     content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: 42vh;
     background: linear-gradient(180deg, transparent, rgba(4,2,1,.72) 55%, rgba(0,0,0,.88));
-    pointer-events: none; z-index: 4;
+    pointer-events: none; z-index: 1; /* behind timeline/labels/controls (z≥5), above canvas */
   }
   #hist .h-year { bottom: 150px !important; z-index: 6; }
   #hist .h-timeline { bottom: 62px !important; z-index: 6; }
@@ -1010,3 +1010,36 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
   #dtab { right: 56px !important; top: 104px !important; bottom: auto !important; max-height: calc(100vh - 110px); }
   #codex { /* full screen overlay already */ }
 }
+
+
+/* ===== v13d: Event button matches clay icon stack ===== */
+#ev-sheet-btn.clay-btn {
+  display: none;
+  align-items: center; justify-content: center;
+  background: var(--clay-pits), var(--clay-noise), var(--clay) !important;
+  background-size: 90px 90px, 160px 160px, 100% 100% !important;
+  border: 0 !important;
+  border-radius: 12px 9px 13px 8px / 9px 13px 8px 12px !important;
+  box-shadow: inset 0 1.5px 0 rgba(255,226,186,.38), inset 0 -4px 7px rgba(40,18,6,.55), 0 4px 14px rgba(0,0,0,.7) !important;
+  color: #22130a !important;
+  padding: 0 !important;
+  cursor: pointer;
+}
+#ev-sheet-btn .qi {
+  width: 18px; height: 18px; display: block;
+  fill: none; stroke: #22130a; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+#ev-sheet-btn b { display: none; } /* icon-only like the stack */
+@media (max-width: 600px), (max-height: 450px) {
+  body.history #ev-sheet-btn.clay-btn {
+    /* subtle light outline to call it out on mobile */
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,226,186,.38),
+      inset 0 -4px 7px rgba(40,18,6,.55),
+      0 0 0 1.5px rgba(255, 226, 180, .55),
+      0 0 10px rgba(232, 194, 122, .28),
+      0 4px 14px rgba(0,0,0,.7) !important;
+  }
+  #ev-sheet-btn .qi { width: 17px; height: 17px; }
+}
+/* Desktop: Event stays hidden (existing rules); no visual regression */
