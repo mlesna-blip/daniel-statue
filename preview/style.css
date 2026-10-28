@@ -1240,3 +1240,8 @@ body::after, body.history::after { pointer-events: none !important; }
   width: 18px; height: 18px; display: block;
   fill: none; stroke: #22130a; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
 }
+
+
+/* v14c: event only in history */
+#ev-sheet-btn, #tools #ev-sheet-btn { display: none !important; }
+body.history #ev-sheet-btn, body.history #tools #ev-sheet-btn { display: flex !important; }

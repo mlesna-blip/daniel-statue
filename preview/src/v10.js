@@ -13,7 +13,7 @@ const ICON = {
   lang: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17"/></svg>',
   caret: '<svg class="cr" viewBox="0 0 10 10"><path d="M2 6.5 5 3.5 8 6.5"/></svg>',
   quiz: '<svg viewBox="0 0 24 24" class="qi"><path d="M9 9.2a3 3 0 1 1 4.2 2.8c-.8.4-1.2 1-1.2 1.9v.6"/><circle cx="12" cy="17.6" r=".9"/></svg>',
-  tales: '<svg viewBox="0 0 24 24" class="qi" aria-hidden="true"><path d="M12 3.2c2.2 3.1 5.6 5.4 5.6 9.2A5.6 5.6 0 0 1 12 18.8 5.6 5.6 0 0 1 6.4 12.4C6.4 8.6 9.8 6.3 12 3.2z"/><path d="M12 9.2c1.1 1.5 2.6 2.6 2.6 4.4A2.6 2.6 0 0 1 12 16.2a2.6 2.6 0 0 1-2.6-2.6c0-1.8 1.5-2.9 2.6-4.4z"/></svg>',
+  tales: '<svg viewBox="0 0 24 24" class="qi" aria-hidden="true"><path d="M12 2.8c1.8 2.6 5.2 4.8 5.2 8.6A5.2 5.2 0 0 1 12 16.6 5.2 5.2 0 0 1 6.8 11.4C6.8 7.6 10.2 5.4 12 2.8z"/><path d="M12 8.5c.9 1.2 2.2 2.1 2.2 3.6A2.2 2.2 0 0 1 12 14.3a2.2 2.2 0 0 1-2.2-2.2c0-1.5 1.3-2.4 2.2-3.6z"/><path d="M9.2 18.2h5.6M10.2 20.2h3.6"/></svg>',
 };
 const TALE_POS = { furnace: [-330, 0, -480], den: [-520, 0, -200], tree: [430, 0, -660] }; // v13: den far from the tree (west of Babylon) // v12: Hunyuan furnace/tree come back closer; low-poly den stays far // v11 fb: pushed far back so the low-poly only reads as silhouettes
 const TALE_AT = { 1: ['furnace', 'tree'], 2: ['wall', 'den'] };

@@ -44,7 +44,7 @@ export async function createBeasts({ world, statue, history }) {
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   let cur = null;
   // v13: History beasts rise from the map (no spin, no plinth), with a simple dust puff; sink/fade out when the era ends.
-  const H_REST = new THREE.Vector3(-2, 0, 36), HB = { head: 'lion', chest: 'bear', belly: 'leopard', legs: 'fourth', feet: 'fourth' };
+  const H_REST = new THREE.Vector3(0, 0, 55), HB = { head: 'lion', chest: 'bear', belly: 'leopard', legs: 'fourth', feet: 'fourth' }; // v14: further onto the map so the directed cam sees feet on the relief
   const H_SC = 1.65; let hShown = null, hWas = false;
   const ease = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   // soft dust puff (canvas sprite)
@@ -55,12 +55,12 @@ export async function createBeasts({ world, statue, history }) {
     spr.scale.set(18, 7, 1); spr.position.set(0, 1.2, 0); it.holder.add(spr); it.dust = spr; return spr;
   }
   function groundY(x, z) {
-    // Surface between map relief and platform — never below platform top near the statue.
+    // Surface between map relief and platform — never below the map/platform shelf.
     let g = top;
     try { if (history && history.map && history.map.groundAt) g = history.map.groundAt(x, z); } catch (e) { }
-    // Blend toward platform when near the colossus feet so beasts stand on the shared ledge
-    if (z > 20 && z < 50 && Math.abs(x) < 40) g = Math.max(g, top * .92);
-    return g;
+    // Keep beasts on the shared shelf in front of the colossus (map edge ≈ z 30–70)
+    if (z > 20 && z < 80 && Math.abs(x) < 60) g = Math.max(g, top);
+    return Math.max(g, top * .85);
   }
   const _bbox = new THREE.Box3();
   /** Snap holder Y so the model's world-space feet sit at surfaceY (remeasure every call — pivots/scale differ per beast). */
@@ -155,19 +155,22 @@ export async function createBeasts({ world, statue, history }) {
       const want = hist ? (hShown && Math.abs(items[hShown].sx) < .999 ? hShown : null) || hShown : activeSec ? secToBeast[activeSec] : null; if (want) cur = want;
       for (const id in items) {
         const it = items[id], goal = want === id ? 1 : 0; it.k += (goal - it.k) * Math.min(1, dt * 2.2);
-        const base = .2 + it.k * .8; it.mats.forEach(m => { m.color.copy(m.userData.c0).multiplyScalar(base); m.emissiveIntensity = it.k * (hist ? .38 : .12); m.envMapIntensity = .3 + it.k * .6; });
-        it.glow.material.opacity = it.k * .22;
+        const base = hist ? (.45 + it.k * .55) : (.2 + it.k * .8);
+        it.mats.forEach(m => { m.color.copy(m.userData.c0).multiplyScalar(base); m.emissiveIntensity = it.k * (hist ? .85 : .12); m.envMapIntensity = .35 + it.k * (hist ? 1.1 : .6); });
+        it.glow.visible = !hist; // plinth glow off in History
+        it.glow.material.opacity = hist ? 0 : it.k * .22;
       }
       const it = cur && items[cur]; const k = it ? it.k : 0;
       if (it) {
         const p = it.holder.position;
-        // Aim from above-front at the beast chest; keep target on the mesh even while rising
-        light.position.set(p.x + 8, p.y + 42, p.z + 28);
-        light.target.position.set(p.x, p.y + 8, p.z);
+        // Aim from camera-side above at the beast mid; History needs a hot key or the dark metal reads as a void
+        light.position.set(p.x + 12, p.y + 48, p.z + 36);
+        light.target.position.set(p.x, p.y + 12, p.z);
         light.target.updateMatrixWorld();
-        light.distance = hist ? 160 : 140;
+        light.distance = hist ? 200 : 140;
+        light.angle = THREE.MathUtils.degToRad(hist ? 40 : 32);
       }
-      light.intensity = k * (hist ? 4200 : 2600);
+      light.intensity = k * (hist ? 9000 : 2600);
     },
   };
 }
