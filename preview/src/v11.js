@@ -1,7 +1,7 @@
 // v11: statue switcher. A small clay statue icon in the tools row opens a dropdown of statue designs.
 // Slot 1 = the new statue (default), slot 2 = the original statue (unlocked by finishing the quiz), slot 3 = the v11d statue, slot 4 = the v11f statue, slot 5 = the v11o ziggurat statue, slot 6 = placeholder.
 // Swapping fades to black, stores the choice and the current view, reloads, and fades back in on the same view.
-import { STATUES, isUnlocked } from './statueGLB.js?v=20261028v15b';
+import { STATUES, isUnlocked } from './statueGLB.js?v=20261028v15c';
 const $ = h => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstChild; };
 const ICON = '<svg viewBox="0 0 24 24" class="qi"><circle cx="12" cy="4.2" r="2.1"/><path d="M9.2 7.6h5.6l.6 5.2h-6.8z"/><path d="M9.6 12.8h4.8l-.3 5.4h-4.2z"/><path d="M8 20.6h8"/></svg>';
 const LOCK = '<svg viewBox="0 0 24 24" class="lk"><rect x="6" y="11" width="12" height="9" rx="1.5"/><path d="M8.5 11V8a3.5 3.5 0 0 1 7 0v3"/></svg>';

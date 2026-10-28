@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { createFire } from '../fire.js?v=20261028v15b';
+import { createFire } from '../fire.js?v=20261028v15c';
 
 // Map: real DEM relief (AWS Terrarium / SRTM+GEBCO), Natural Earth coasts & rivers,
 // historical-basemaps territories as signed-distance fields that morph between keyframes.
