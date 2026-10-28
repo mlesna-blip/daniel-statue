@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import { SECTIONS } from './data.js?v=20261028v15';
+import { SECTIONS } from './data.js?v=20261028v15b';
 
 // GLB node name -> section id
 const NODE = { head: 'head_gold', chest: 'chest_silver', belly: 'belly_bronze', legs: 'legs_iron', feet: 'feet_clay' };
@@ -9,7 +9,7 @@ const NODE = { head: 'head_gold', chest: 'chest_silver', belly: 'belly_bronze', 
 const COLOR_NEW = { head: 0xffffff, chest: 0xffffff, belly: 0xffffff, legs: 0xffffff, feet: 0xffffff }; // v10: metals are graded into the texture
 const COLOR_CLASSIC = { head: 0xffffff, chest: 0xeef3ff, belly: 0xd9c6b2, legs: 0xe4e8ee, feet: 0xffffff }; // v9 tints
 // v11: statue switcher. 'new' = v10 statue (default), 'classic' = the original v9 statue (unlockable), 'v11d' = the v11d design (open), 'v11f' = the v11f lamassu design (open)
-export const ASSET_V = '20261028v15';
+export const ASSET_V = '20261028v15b';
 const asset = (p) => p + (p.includes('?') ? '&' : '?') + 'v=' + ASSET_V;
 export const STATUES = { new: { hd: 'models/statue_hd.glb', lod: 'models/statue_lod.glb', color: COLOR_NEW, fx: true }, classic: { hd: 'models/statue_classic_hd.glb', lod: 'models/statue_classic_lod.glb', color: COLOR_CLASSIC, fx: false },
   // v11d: Hunyuan 'v11d-A' design (griffin kilt), processed in /workspace/gt/v11d (same 5 nodes, 0..1 height -> 112 units; feet/legs/belly cuts on the v10 heights, belly/chest on the kilt's top edge; capped)

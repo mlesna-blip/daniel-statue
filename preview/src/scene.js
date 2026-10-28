@@ -5,8 +5,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { groundMaps, pavingMaps, radialSprite, rayTexture, rnd } from './textures.js?v=20261028v15';
-import { createPlume, createFire } from './fire.js?v=20261028v15';
+import { groundMaps, pavingMaps, radialSprite, rayTexture, rnd } from './textures.js?v=20261028v15b';
+import { createPlume, createFire } from './fire.js?v=20261028v15b';
 
 // Faint storm light sits behind the colossus' head.
 export const SUN_DIR = new THREE.Vector3(.2, .95, -1).normalize();
@@ -219,9 +219,9 @@ export function createWorld(container) {
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     const p = new THREE.Points(g, new THREE.PointsMaterial({ size, map: radialSprite(col, 32), transparent: true, opacity: op, depthWrite: false, blending: blend, color: 0xffffff })); scene.add(p); return p;
   };
-  // v15: no dark ash; light ash (embers) toned down
-  const embers = mk('rgba(255,190,120,1)', THREE.AdditiveBlending, .32, .16, 70);
-  const ash = null; // dropped
+  // v15b: restore light embers (no dark ash). Count like pre-v14; a bit dimmer than v14 (.5/.3)
+  const embers = mk('rgba(255,190,120,1)', THREE.AdditiveBlending, .42, .24, 150);
+  const ash = null; // dark ash stays off
 
   // post
   const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { rnd } from './textures.js?v=20261028v15';
+import { rnd } from './textures.js?v=20261028v15b';
 
 // Smooth value noise for rock displacement
 function h3(x, y, z) { const s = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453; return s - Math.floor(s); }

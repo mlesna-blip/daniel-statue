@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import { createMap } from './map.js?v=20261028v15';
-import { createDrone } from './audio.js?v=20261028v15';
+import { createMap } from './map.js?v=20261028v15b';
+import { createDrone } from './audio.js?v=20261028v15b';
 
 // Per-era mood: fog tint, ambient tint, key-light temperature. Everything stays dark and fire-lit.
 const MOOD = {

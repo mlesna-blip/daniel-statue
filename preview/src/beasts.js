@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import { radialSprite } from './textures.js?v=20261028v15';
+import { radialSprite } from './textures.js?v=20261028v15b';
 // v8: the four beasts of Daniel 7 as dark metal statues on low plinths flanking the image, mostly in shadow.
 // Whichever kingdom is active (hover, exploded selection, beast tablet or the current empire in history)
 // wakes its beast with a warm pool of light; the rest stay dim. Loaded lazily after the statue.

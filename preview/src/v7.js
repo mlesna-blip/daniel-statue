@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { makeTex } from './glyphs.js?v=20261028v15';
+import { makeTex } from './glyphs.js?v=20261028v15b';
 // v7: prophecy beasts + clay tablet, number codex, guides, discovery tablet, share links + snapshot.
 const $ = h => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstChild; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
