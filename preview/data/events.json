@@ -1,0 +1,1023 @@
+{
+ "_note": "Editable content. year: negative = BC. territory = data/terr_<id>.png. metal: head|chest|belly|legs|feet (statue section that glows). cam: map point the shot looks at, dist (units), pitch (deg above horizon), yaw (deg, 0 = from the south). routes: [lon,lat] paths armies march along while the timeline moves INTO this event. battle: POI id that flashes on arrival. fire:false = the site was taken without being burned (no flames, only the arrival flash).",
+ "events": [
+  {
+   "year": -605,
+   "date": "605 BC",
+   "title": "Carchemish",
+   "territory": "babylon",
+   "metal": "head",
+   "era": "Babylon",
+   "text": "Crown prince Nebuchadnezzar crushes Pharaoh Necho's Egyptian army on the Euphrates. Syria and the Levant fall to Babylon; months later he is king.",
+   "verse": "Daniel 2:37–38 — “Thou art this head of gold.”",
+   "pois": [
+    "carchemish",
+    "babylon",
+    "memphis"
+   ],
+   "battle": "carchemish",
+   "cam": {
+    "lon": 40.5,
+    "lat": 33.6,
+    "dist": 106,
+    "pitch": 36,
+    "yaw": -6
+   },
+   "routes": [
+    {
+     "side": "gold",
+     "n": 120,
+     "path": [
+      [
+       44.42,
+       32.54
+      ],
+      [
+       43.3,
+       33.4
+      ],
+      [
+       42.0,
+       34.4
+      ],
+      [
+       40.9,
+       34.5
+      ],
+      [
+       40.1,
+       35.3
+      ],
+      [
+       39.0,
+       36.0
+      ],
+      [
+       38.01,
+       36.83
+      ]
+     ]
+    },
+    {
+     "side": "foe",
+     "n": 80,
+     "path": [
+      [
+       31.25,
+       29.85
+      ],
+      [
+       32.3,
+       31.0
+      ],
+      [
+       34.4,
+       31.4
+      ],
+      [
+       35.0,
+       32.8
+      ],
+      [
+       36.0,
+       34.5
+      ],
+      [
+       36.7,
+       35.9
+      ],
+      [
+       38.01,
+       36.83
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -586,
+   "date": "587/586 BC",
+   "title": "Jerusalem Destroyed",
+   "territory": "babylon",
+   "metal": "head",
+   "era": "Babylon",
+   "text": "After an 18-month siege, Nebuchadnezzar's army breaks the walls. Solomon's Temple is burned and Judah is carried into exile in Babylon.",
+   "verse": "Daniel 1:1–2 · 2:38 — “…hath made thee ruler over them all.”",
+   "pois": [
+    "jerusalem",
+    "babylon",
+    "tyre"
+   ],
+   "battle": "jerusalem",
+   "cam": {
+    "lon": 38.6,
+    "lat": 32.4,
+    "dist": 90,
+    "pitch": 34,
+    "yaw": -14
+   },
+   "routes": [
+    {
+     "side": "gold",
+     "n": 120,
+     "path": [
+      [
+       44.42,
+       32.54
+      ],
+      [
+       42.0,
+       34.4
+      ],
+      [
+       40.1,
+       35.3
+      ],
+      [
+       38.0,
+       36.3
+      ],
+      [
+       36.5,
+       34.5
+      ],
+      [
+       35.8,
+       33.3
+      ],
+      [
+       35.23,
+       31.78
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -539,
+   "date": "539 BC",
+   "title": "Cyrus Takes Babylon",
+   "territory": "persia",
+   "metal": "chest",
+   "era": "Medo-Persia",
+   "text": "Persian and Median columns descend from the Zagros along the Diyala, win at Opis, and Babylon falls almost without a fight. Cyrus will let the exiles go home.",
+   "verse": "Daniel 2:39 — “After thee shall arise another kingdom inferior to thee.” (cf. Daniel 5:28)",
+   "pois": [
+    "babylon",
+    "ecbatana",
+    "susa",
+    "pasargadae"
+   ],
+   "battle": "babylon",
+   "cam": {
+    "lon": 46.2,
+    "lat": 32.8,
+    "dist": 81,
+    "pitch": 38,
+    "yaw": 10
+   },
+   "routes": [
+    {
+     "side": "silver",
+     "n": 150,
+     "path": [
+      [
+       48.52,
+       34.8
+      ],
+      [
+       47.0,
+       34.4
+      ],
+      [
+       46.0,
+       34.1
+      ],
+      [
+       45.2,
+       33.9
+      ],
+      [
+       44.6,
+       33.4
+      ],
+      [
+       44.25,
+       33.06
+      ],
+      [
+       44.42,
+       32.54
+      ]
+     ]
+    },
+    {
+     "side": "silver",
+     "n": 70,
+     "path": [
+      [
+       48.25,
+       32.19
+      ],
+      [
+       47.2,
+       32.6
+      ],
+      [
+       46.0,
+       32.9
+      ],
+      [
+       44.9,
+       32.8
+      ],
+      [
+       44.42,
+       32.54
+      ]
+     ]
+    }
+   ],
+   "fire": false
+  },
+  {
+   "year": -334,
+   "date": "334 BC",
+   "title": "Alexander Crosses into Asia",
+   "territory": "persia",
+   "metal": "chest",
+   "era": "Medo-Persia",
+   "text": "Two centuries of Persian rule from the Indus to Egypt. Then Alexander of Macedon crosses the Hellespont and defeats the satraps at the Granicus.",
+   "verse": "Daniel 8:5–7 — the he-goat from the west “touched not the ground.”",
+   "pois": [
+    "pella",
+    "granicus",
+    "athens",
+    "persepolis"
+   ],
+   "battle": "granicus",
+   "cam": {
+    "lon": 27.5,
+    "lat": 38.2,
+    "dist": 92,
+    "pitch": 36,
+    "yaw": -4
+   },
+   "routes": [
+    {
+     "side": "bronze",
+     "n": 110,
+     "path": [
+      [
+       22.52,
+       40.76
+      ],
+      [
+       23.85,
+       40.82
+      ],
+      [
+       25.5,
+       40.9
+      ],
+      [
+       26.4,
+       40.23
+      ],
+      [
+       27.3,
+       40.2
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -333,
+   "date": "333 BC",
+   "title": "Issus",
+   "territory": "persia",
+   "metal": "chest",
+   "era": "Medo-Persia",
+   "text": "Alexander marches through Anatolia and the Cilician Gates. At Issus he routs Darius III, who flees and leaves his family behind.",
+   "verse": "Daniel 8:7 — “…there was none that could deliver the ram out of his hand.”",
+   "pois": [
+    "issus",
+    "antioch"
+   ],
+   "battle": "issus",
+   "cam": {
+    "lon": 34.0,
+    "lat": 37.0,
+    "dist": 87,
+    "pitch": 36,
+    "yaw": 4
+   },
+   "routes": [
+    {
+     "side": "bronze",
+     "n": 110,
+     "path": [
+      [
+       27.3,
+       40.2
+      ],
+      [
+       28.04,
+       38.48
+      ],
+      [
+       30.5,
+       39.2
+      ],
+      [
+       31.98,
+       39.65
+      ],
+      [
+       32.86,
+       39.93
+      ],
+      [
+       34.0,
+       38.6
+      ],
+      [
+       34.78,
+       37.28
+      ],
+      [
+       34.9,
+       36.92
+      ],
+      [
+       35.6,
+       36.9
+      ],
+      [
+       36.2,
+       36.83
+      ]
+     ]
+    },
+    {
+     "side": "silver",
+     "n": 150,
+     "path": [
+      [
+       44.42,
+       32.54
+      ],
+      [
+       42.0,
+       34.4
+      ],
+      [
+       40.1,
+       35.3
+      ],
+      [
+       38.0,
+       36.6
+      ],
+      [
+       36.7,
+       36.6
+      ],
+      [
+       36.2,
+       36.83
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -331,
+   "date": "332–331 BC",
+   "title": "Egypt, then Gaugamela",
+   "territory": "alexander",
+   "metal": "belly",
+   "era": "Greece",
+   "text": "Tyre falls after a seven-month siege, Egypt opens its gates and Alexandria is founded. On the plain of Gaugamela the Persian empire breaks.",
+   "verse": "Daniel 2:39 — “…another third kingdom of brass, which shall bear rule over all the earth.”",
+   "pois": [
+    "tyre",
+    "memphis",
+    "alexandria",
+    "gaugamela",
+    "babylon"
+   ],
+   "battle": "gaugamela",
+   "cam": {
+    "lon": 38.0,
+    "lat": 33.4,
+    "dist": 123,
+    "pitch": 42,
+    "yaw": 0
+   },
+   "routes": [
+    {
+     "side": "bronze",
+     "n": 130,
+     "path": [
+      [
+       36.2,
+       36.83
+      ],
+      [
+       35.9,
+       35.5
+      ],
+      [
+       35.2,
+       33.27
+      ],
+      [
+       34.45,
+       31.5
+      ],
+      [
+       32.3,
+       31.0
+      ],
+      [
+       31.25,
+       29.85
+      ],
+      [
+       29.92,
+       31.2
+      ],
+      [
+       31.25,
+       29.85
+      ],
+      [
+       32.3,
+       31.0
+      ],
+      [
+       34.45,
+       31.5
+      ],
+      [
+       35.2,
+       33.27
+      ],
+      [
+       36.5,
+       34.8
+      ],
+      [
+       38.4,
+       35.9
+      ],
+      [
+       40.5,
+       36.6
+      ],
+      [
+       42.5,
+       36.8
+      ],
+      [
+       43.44,
+       36.57
+      ]
+     ]
+    },
+    {
+     "side": "silver",
+     "n": 160,
+     "path": [
+      [
+       44.42,
+       32.54
+      ],
+      [
+       44.0,
+       34.5
+      ],
+      [
+       43.6,
+       35.6
+      ],
+      [
+       43.44,
+       36.57
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -323,
+   "date": "330–323 BC",
+   "title": "To the Indus, Death, and Division",
+   "territory": "diadochi",
+   "metal": "belly",
+   "era": "Greece",
+   "text": "Persepolis burns. Alexander marches to the Indus and back, then dies in Babylon at 32. His generals carve the empire up: Ptolemy, Seleucus, Cassander, Lysimachus.",
+   "verse": "Daniel 8:8 — “…the great horn was broken; and for it came up four notable ones.”",
+   "pois": [
+    "persepolis",
+    "taxila",
+    "babylon",
+    "alexandria",
+    "antioch",
+    "pella"
+   ],
+   "battle": null,
+   "cam": {
+    "lon": 42.0,
+    "lat": 32.5,
+    "dist": 196,
+    "pitch": 48,
+    "yaw": 0
+   },
+   "routes": [
+    {
+     "side": "bronze",
+     "n": 120,
+     "path": [
+      [
+       43.44,
+       36.57
+      ],
+      [
+       44.42,
+       32.54
+      ],
+      [
+       48.25,
+       32.19
+      ],
+      [
+       51.6,
+       30.6
+      ],
+      [
+       52.89,
+       29.93
+      ],
+      [
+       52.6,
+       33.5
+      ],
+      [
+       54.5,
+       36.4
+      ],
+      [
+       59.5,
+       36.3
+      ],
+      [
+       62.2,
+       34.35
+      ],
+      [
+       66.9,
+       36.76
+      ],
+      [
+       69.2,
+       34.5
+      ],
+      [
+       71.5,
+       34.0
+      ],
+      [
+       72.79,
+       33.74
+      ],
+      [
+       73.4,
+       32.2
+      ],
+      [
+       71.5,
+       30.2
+      ],
+      [
+       68.4,
+       25.4
+      ],
+      [
+       63.0,
+       25.6
+      ],
+      [
+       58.5,
+       27.0
+      ],
+      [
+       55.5,
+       28.8
+      ],
+      [
+       52.89,
+       29.93
+      ],
+      [
+       48.25,
+       32.19
+      ],
+      [
+       44.42,
+       32.54
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -168,
+   "date": "168 BC",
+   "title": "Pydna",
+   "territory": "rome200",
+   "metal": "legs",
+   "era": "Rome",
+   "text": "The Roman legions shatter the Macedonian phalanx at Pydna. Alexander's homeland becomes a Roman province twenty years later.",
+   "verse": "Daniel 2:40 — “The fourth kingdom shall be strong as iron.”",
+   "pois": [
+    "rome",
+    "pydna",
+    "pella",
+    "carthage"
+   ],
+   "battle": "pydna",
+   "cam": {
+    "lon": 19.0,
+    "lat": 39.6,
+    "dist": 106,
+    "pitch": 36,
+    "yaw": -8
+   },
+   "routes": [
+    {
+     "side": "iron",
+     "n": 140,
+     "path": [
+      [
+       12.5,
+       41.9
+      ],
+      [
+       14.8,
+       41.1
+      ],
+      [
+       17.94,
+       40.63
+      ],
+      [
+       19.47,
+       40.72
+      ],
+      [
+       21.0,
+       40.3
+      ],
+      [
+       22.6,
+       40.37
+      ]
+     ]
+    },
+    {
+     "side": "bronze",
+     "n": 90,
+     "path": [
+      [
+       22.52,
+       40.76
+      ],
+      [
+       22.6,
+       40.5
+      ],
+      [
+       22.6,
+       40.37
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -63,
+   "date": "63 BC",
+   "title": "Pompey in Jerusalem",
+   "territory": "rome100",
+   "metal": "legs",
+   "era": "Rome",
+   "text": "Pompey ends the Seleucid line, makes Syria a province and storms the Temple Mount. Judea becomes a Roman client.",
+   "verse": "Daniel 2:40 — “…as iron that breaketh all these, shall it break in pieces and bruise.”",
+   "pois": [
+    "antioch",
+    "jerusalem",
+    "rome"
+   ],
+   "battle": "jerusalem",
+   "cam": {
+    "lon": 35.0,
+    "lat": 33.6,
+    "dist": 87,
+    "pitch": 36,
+    "yaw": -6
+   },
+   "routes": [
+    {
+     "side": "iron",
+     "n": 140,
+     "path": [
+      [
+       36.16,
+       36.2
+      ],
+      [
+       36.3,
+       34.8
+      ],
+      [
+       36.29,
+       33.51
+      ],
+      [
+       35.6,
+       32.5
+      ],
+      [
+       35.23,
+       31.78
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": -30,
+   "date": "30 BC",
+   "title": "Egypt Falls to Rome",
+   "territory": "rome1",
+   "metal": "legs",
+   "era": "Rome",
+   "text": "After Actium, Octavian takes Alexandria; Antony and Cleopatra die. The last of the Greek kingdoms is gone. The Mediterranean is a Roman lake.",
+   "verse": "Daniel 2:40 — “…forasmuch as iron breaketh in pieces and subdueth all things.”",
+   "pois": [
+    "alexandria",
+    "rome",
+    "antioch"
+   ],
+   "battle": "alexandria",
+   "cam": {
+    "lon": 27.0,
+    "lat": 34.5,
+    "dist": 168,
+    "pitch": 44,
+    "yaw": 0
+   },
+   "routes": [
+    {
+     "side": "iron",
+     "n": 140,
+     "path": [
+      [
+       36.16,
+       36.2
+      ],
+      [
+       35.9,
+       34.5
+      ],
+      [
+       35.2,
+       33.0
+      ],
+      [
+       34.45,
+       31.5
+      ],
+      [
+       32.55,
+       31.04
+      ],
+      [
+       31.3,
+       31.0
+      ],
+      [
+       29.92,
+       31.2
+      ]
+     ]
+    },
+    {
+     "side": "iron",
+     "n": 90,
+     "path": [
+      [
+       21.86,
+       32.82
+      ],
+      [
+       24.0,
+       32.0
+      ],
+      [
+       27.24,
+       31.35
+      ],
+      [
+       29.0,
+       30.95
+      ],
+      [
+       29.92,
+       31.2
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": 70,
+   "date": "AD 70",
+   "title": "The Temple Burns",
+   "territory": "rome100ad",
+   "metal": "legs",
+   "era": "Rome",
+   "text": "Titus besieges Jerusalem at the end of the Jewish revolt. The Second Temple is destroyed.",
+   "verse": "Daniel 2:40 · cf. 9:26 — “…the people of the prince that shall come shall destroy the city and the sanctuary.”",
+   "pois": [
+    "jerusalem",
+    "alexandria"
+   ],
+   "battle": "jerusalem",
+   "cam": {
+    "lon": 34.6,
+    "lat": 32.4,
+    "dist": 69,
+    "pitch": 36,
+    "yaw": -10
+   },
+   "routes": [
+    {
+     "side": "iron",
+     "n": 150,
+     "path": [
+      [
+       29.92,
+       31.2
+      ],
+      [
+       32.55,
+       31.04
+      ],
+      [
+       34.45,
+       31.5
+      ],
+      [
+       34.89,
+       32.5
+      ],
+      [
+       35.23,
+       31.78
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": 395,
+   "date": "AD 395",
+   "title": "East and West",
+   "territory": "rome400",
+   "metal": "legs",
+   "era": "Rome",
+   "text": "At Theodosius's death the empire is permanently split between his sons, the West ruled from Milan and Ravenna, the East from Constantinople. Alaric's Goths are loose in the Balkans.",
+   "verse": "Daniel 2:33 — “His legs of iron…” (two legs, as many readers have noted)",
+   "pois": [
+    "rome",
+    "constantinople",
+    "athens",
+    "ravenna"
+   ],
+   "battle": null,
+   "cam": {
+    "lon": 22.0,
+    "lat": 37.0,
+    "dist": 168,
+    "pitch": 44,
+    "yaw": 0
+   },
+   "routes": [
+    {
+     "side": "clay",
+     "n": 110,
+     "path": [
+      [
+       25.6,
+       43.2
+      ],
+      [
+       24.0,
+       42.2
+      ],
+      [
+       22.9,
+       40.6
+      ],
+      [
+       22.4,
+       39.6
+      ],
+      [
+       22.9,
+       38.8
+      ],
+      [
+       23.73,
+       37.97
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "year": 476,
+   "date": "AD 476",
+   "title": "The West Falls into Kingdoms",
+   "territory": "kingdoms",
+   "metal": "feet",
+   "era": "Divided Kingdoms",
+   "text": "Odoacer deposes Romulus Augustulus at Ravenna. The western empire is gone, divided among Ostrogoths, Vandals, Visigoths, Franks and Burgundians, while the East holds on.",
+   "verse": "Daniel 2:41–43 — “…the kingdom shall be divided … partly strong, and partly broken.”",
+   "pois": [
+    "ravenna",
+    "rome",
+    "carthage",
+    "constantinople"
+   ],
+   "battle": "ravenna",
+   "cam": {
+    "lon": 19.0,
+    "lat": 38.6,
+    "dist": 134,
+    "pitch": 40,
+    "yaw": 0
+   },
+   "routes": [
+    {
+     "side": "clay",
+     "n": 120,
+     "path": [
+      [
+       13.6,
+       45.0
+      ],
+      [
+       12.9,
+       44.8
+      ],
+      [
+       12.2,
+       44.42
+      ]
+     ]
+    },
+    {
+     "side": "clay",
+     "n": 90,
+     "path": [
+      [
+       10.33,
+       36.85
+      ],
+      [
+       11.0,
+       38.0
+      ],
+      [
+       11.8,
+       39.8
+      ],
+      [
+       12.3,
+       41.2
+      ],
+      [
+       12.5,
+       41.9
+      ]
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,211 @@
+{
+  "levels": [
+    {
+      "id": "young",
+      "name": "Young Explorer",
+      "pass": 6,
+      "questions": [
+        {
+          "q": "What was the head of the great image made of?",
+          "a": [
+            "Fine gold",
+            "Silver",
+            "Brass",
+            "Iron"
+          ],
+          "ref": "Daniel 2:32, 38",
+          "why": "“Thou art this head of gold.” Daniel tells Nebuchadnezzar that his kingdom is the head.",
+          "img": "data/quiz/statue.webp"
+        },
+        {
+          "q": "Which kingdom does Daniel 2 name outright?",
+          "a": [
+            "Babylon",
+            "Persia",
+            "Greece",
+            "Rome"
+          ],
+          "ref": "Daniel 2:37–38",
+          "why": "Only the head is named in the chapter: Nebuchadnezzar’s Babylon. The later kingdoms are named in Daniel 8 or identified from history.",
+          "img": "data/beasts/line/lion.png"
+        },
+        {
+          "q": "In Daniel 8, who are the ram with two horns and the rough goat?",
+          "a": [
+            "Media and Persia, then Greece",
+            "Egypt, then Assyria",
+            "Rome, then Carthage",
+            "Babylon, then Egypt"
+          ],
+          "ref": "Daniel 8:20–21",
+          "why": "“The ram … are the kings of Media and Persia. And the rough goat is the king of Grecia.”",
+          "img": "data/beasts/line/ram.png"
+        },
+        {
+          "q": "What were the feet of the image made of?",
+          "a": [
+            "Part iron, part clay",
+            "Brass and silver",
+            "Pure iron",
+            "Stone"
+          ],
+          "ref": "Daniel 2:33, 41",
+          "why": "“His feet part of iron and part of clay.” A divided kingdom, partly strong and partly broken.",
+          "img": "data/quiz/statue.webp"
+        },
+        {
+          "q": "What struck the image on its feet?",
+          "a": [
+            "A stone cut out without hands",
+            "A bolt of fire",
+            "A great flood",
+            "An army from the north"
+          ],
+          "ref": "Daniel 2:34",
+          "why": "“A stone was cut out without hands, which smote the image upon his feet.”",
+          "img": "data/quiz/stone.webp"
+        },
+        {
+          "q": "What did the stone become?",
+          "a": [
+            "A great mountain that filled the whole earth",
+            "A new statue",
+            "A city wall",
+            "Dust in the wind"
+          ],
+          "ref": "Daniel 2:35, 44",
+          "why": "It is the kingdom that the God of heaven sets up, which “shall never be destroyed.”",
+          "img": "data/quiz/stone.webp"
+        },
+        {
+          "q": "Which king did some critics once call a fiction, until a cylinder from Ur named him?",
+          "a": [
+            "Belshazzar",
+            "Cyrus",
+            "Darius III",
+            "Nebuchadnezzar"
+          ],
+          "ref": "Daniel 5",
+          "why": "The Nabonidus Cylinders, found at Ur in 1854, name Belshazzar as Nabonidus’s eldest son.",
+          "img": "data/tales/wall.webp"
+        },
+        {
+          "q": "According to the Nabonidus Chronicle, how did Babylon fall in 539 BC?",
+          "a": [
+            "Cyrus’s army entered without a battle",
+            "After a ten-year siege",
+            "It was destroyed by an earthquake",
+            "Alexander burned it"
+          ],
+          "ref": "Daniel 5:30–31",
+          "why": "The chronicle says the army of Cyrus “entered Babylon without battle.” Daniel 5 says the kingdom fell that very night.",
+          "img": "data/beasts/line/bear.png"
+        }
+      ]
+    },
+    {
+      "id": "scholar",
+      "name": "Scholar",
+      "pass": 6,
+      "questions": [
+        {
+          "q": "What struck the image on its feet?",
+          "a": [
+            "A stone cut out without hands",
+            "A bolt of fire",
+            "A great flood",
+            "An army from the north"
+          ],
+          "ref": "Daniel 2:34",
+          "why": "“A stone was cut out without hands, which smote the image upon his feet.”",
+          "img": "data/quiz/stone.webp"
+        },
+        {
+          "q": "What did the stone become?",
+          "a": [
+            "A great mountain that filled the whole earth",
+            "A new statue",
+            "A city wall",
+            "Dust in the wind"
+          ],
+          "ref": "Daniel 2:35, 44",
+          "why": "It is the kingdom that the God of heaven sets up, which “shall never be destroyed.”",
+          "img": "data/quiz/stone.webp"
+        },
+        {
+          "q": "Which king did some critics once call a fiction, until a cylinder from Ur named him?",
+          "a": [
+            "Belshazzar",
+            "Cyrus",
+            "Darius III",
+            "Nebuchadnezzar"
+          ],
+          "ref": "Daniel 5",
+          "why": "The Nabonidus Cylinders, found at Ur in 1854, name Belshazzar as Nabonidus’s eldest son.",
+          "img": "data/tales/wall.webp"
+        },
+        {
+          "q": "According to the Nabonidus Chronicle, how did Babylon fall in 539 BC?",
+          "a": [
+            "Cyrus’s army entered without a battle",
+            "After a ten-year siege",
+            "It was destroyed by an earthquake",
+            "Alexander burned it"
+          ],
+          "ref": "Daniel 5:30–31",
+          "why": "The chronicle says the army of Cyrus “entered Babylon without battle.” Daniel 5 says the kingdom fell that very night.",
+          "img": "data/beasts/line/bear.png"
+        },
+        {
+          "q": "Which beast of Daniel 7 had four wings and four heads?",
+          "a": [
+            "The leopard",
+            "The lion",
+            "The bear",
+            "The fourth beast"
+          ],
+          "ref": "Daniel 7:6",
+          "why": "“Like a leopard, which had upon the back of it four wings of a fowl; the beast had also four heads.”",
+          "img": "data/beasts/line/leopard.png"
+        },
+        {
+          "q": "Where did Alexander the Great die in 323 BC?",
+          "a": [
+            "Babylon",
+            "Athens",
+            "Alexandria",
+            "Persepolis"
+          ],
+          "ref": "Daniel 8:8",
+          "why": "“When he was strong, the great horn was broken.” He died in Babylon, and four kingdoms arose from his empire.",
+          "img": "data/beasts/line/goat.png"
+        },
+        {
+          "q": "Who were thrown into the fiery furnace?",
+          "a": [
+            "Shadrach, Meshach and Abed-nego",
+            "Daniel and Belshazzar",
+            "Cyrus and Darius",
+            "The wise men of Babylon"
+          ],
+          "ref": "Daniel 3",
+          "why": "They would not bow to the golden image, and a fourth figure was seen with them in the fire.",
+          "img": "data/tales/furnace.webp"
+        },
+        {
+          "q": "Which event of AD 70 matches Daniel 9:26?",
+          "a": [
+            "Rome destroyed Jerusalem and its temple",
+            "Rome split into east and west",
+            "Persia conquered Egypt",
+            "The Goths sacked Rome"
+          ],
+          "ref": "Daniel 9:26",
+          "why": "“The people of the prince that shall come shall destroy the city and the sanctuary.” The Arch of Titus still shows the spoils.",
+          "img": "data/beasts/line/fourth.png"
+        }
+      ]
+    }
+  ],
+  "passScore": 6
+}
