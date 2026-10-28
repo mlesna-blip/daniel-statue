@@ -982,18 +982,21 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
 
   /* Landscape: tighter top chrome under modes row */
 }
-@media (max-height: 450px) and (orientation: landscape) {
+@media (max-height: 450px) {
+  /* short landscape / short screens: tighter top stack (don't rely on orientation media) */
   #presenter-btn { top: 44px !important; right: 10px !important; width: 32px !important; height: 32px !important; }
   #tools.v10, #tools {
-    top: 82px !important; right: 10px !important; bottom: auto !important;
+    top: 84px !important; right: 10px !important; bottom: auto !important;
     flex-direction: column !important; gap: 5px !important;
   }
+  body.history #tools.v10, body.history #tools { top: 84px !important; bottom: auto !important; }
   #tools .clay-btn, #tools.v10 .clay-btn { width: 34px !important; height: 34px !important; }
   #ev-sheet-btn {
-    top: calc(82px + (34px * 4) + (5px * 3) + 20px) !important;
+    top: calc(84px + (34px * 4) + (5px * 3) + 10px) !important; /* 2× within-gap */
     right: 10px !important; bottom: auto !important;
     width: 34px !important; height: 34px !important;
   }
+  #talelist, #dtab { top: 84px !important; }
 }
 @media (max-width: 600px) {
   #presenter-btn { top: 52px !important; right: 10px !important; }
