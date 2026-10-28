@@ -1245,3 +1245,25 @@ body::after, body.history::after { pointer-events: none !important; }
 /* v14c: event only in history */
 #ev-sheet-btn, #tools #ev-sheet-btn { display: none !important; }
 body.history #ev-sheet-btn, body.history #tools #ev-sheet-btn { display: flex !important; }
+
+
+/* v14d: presenter arrows — force opposite edges on mobile */
+@media (max-width: 700px) {
+  #presenter .pr-stage { display: block !important; pointer-events: none !important; }
+  #presenter .pr-text {
+    position: relative !important; width: 100% !important;
+    margin: 0 !important; pointer-events: none !important;
+  }
+  #presenter .pr-prev,
+  #presenter .pr-next {
+    position: fixed !important;
+    top: auto !important;
+    bottom: 38vh !important;
+    width: 52px !important; height: 52px !important;
+    margin: 0 !important; transform: none !important;
+    z-index: 50 !important; pointer-events: auto !important;
+    flex: none !important; order: unset !important;
+  }
+  #presenter .pr-prev { left: 10px !important; right: auto !important; }
+  #presenter .pr-next { left: auto !important; right: 10px !important; }
+}
