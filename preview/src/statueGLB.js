@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import { SECTIONS } from './data.js';
+import { SECTIONS } from './data.js?v=20261028v15';
 
 // GLB node name -> section id
 const NODE = { head: 'head_gold', chest: 'chest_silver', belly: 'belly_bronze', legs: 'legs_iron', feet: 'feet_clay' };
@@ -9,7 +9,7 @@ const NODE = { head: 'head_gold', chest: 'chest_silver', belly: 'belly_bronze', 
 const COLOR_NEW = { head: 0xffffff, chest: 0xffffff, belly: 0xffffff, legs: 0xffffff, feet: 0xffffff }; // v10: metals are graded into the texture
 const COLOR_CLASSIC = { head: 0xffffff, chest: 0xeef3ff, belly: 0xd9c6b2, legs: 0xe4e8ee, feet: 0xffffff }; // v9 tints
 // v11: statue switcher. 'new' = v10 statue (default), 'classic' = the original v9 statue (unlockable), 'v11d' = the v11d design (open), 'v11f' = the v11f lamassu design (open)
-export const ASSET_V = '20261028v14';
+export const ASSET_V = '20261028v15';
 const asset = (p) => p + (p.includes('?') ? '&' : '?') + 'v=' + ASSET_V;
 export const STATUES = { new: { hd: 'models/statue_hd.glb', lod: 'models/statue_lod.glb', color: COLOR_NEW, fx: true }, classic: { hd: 'models/statue_classic_hd.glb', lod: 'models/statue_classic_lod.glb', color: COLOR_CLASSIC, fx: false },
   // v11d: Hunyuan 'v11d-A' design (griffin kilt), processed in /workspace/gt/v11d (same 5 nodes, 0..1 height -> 112 units; feet/legs/belly cuts on the v10 heights, belly/chest on the kilt's top edge; capped)
@@ -150,47 +150,6 @@ function splitCaps(geo, mw, id, forceMid = null) {
   return { body, caps };
 }
 
-/** v14: cut remaining bronze waist spike (outlier +X triangles at top rim of belly). */
-function cutBronzeSpike(geo) {
-  if (!geo || !geo.attributes || !geo.attributes.position) return geo;
-  const g = geo.index ? geo : geo;
-  const P = g.attributes.position;
-  const idx = g.index ? Array.from(g.index.array) : null;
-  const nTri = idx ? idx.length / 3 : P.count / 3;
-  // Collect top-band face centroids to find the body envelope, then drop +X outliers
-  const tops = [];
-  let ymin = Infinity, ymax = -Infinity;
-  for (let i = 0; i < P.count; i++) { const y = P.getY(i); if (y < ymin) ymin = y; if (y > ymax) ymax = y; }
-  const yCut = ymin + (ymax - ymin) * 0.78;
-  for (let f = 0; f < nTri; f++) {
-    const a = idx ? idx[f * 3] : f * 3, b = idx ? idx[f * 3 + 1] : f * 3 + 1, c = idx ? idx[f * 3 + 2] : f * 3 + 2;
-    const cx = (P.getX(a) + P.getX(b) + P.getX(c)) / 3;
-    const cy = (P.getY(a) + P.getY(b) + P.getY(c)) / 3;
-    const cz = (P.getZ(a) + P.getZ(b) + P.getZ(c)) / 3;
-    if (cy > yCut) tops.push({ f, a, b, c, cx, cy, cz, r: Math.hypot(cx, cz) });
-  }
-  if (!tops.length) return g;
-  tops.sort((u, v) => u.cx - v.cx);
-  const p95 = tops[Math.min(tops.length - 1, Math.floor(tops.length * 0.95))].cx;
-  const p98 = tops[Math.min(tops.length - 1, Math.floor(tops.length * 0.98))].cx;
-  const xLim = Math.max(p95 * 1.02, p98 * 0.98); // drop the far-right tail
-  const keep = [];
-  let dropped = 0;
-  const dropF = new Set(tops.filter(t => t.cx > xLim && t.cx > 0).map(t => t.f));
-  // also drop any thin spike with high r at the rim
-  tops.forEach(t => { if (t.r > p95 * 1.12 && t.cx > 0) dropF.add(t.f); });
-  for (let f = 0; f < nTri; f++) {
-    const a = idx ? idx[f * 3] : f * 3, b = idx ? idx[f * 3 + 1] : f * 3 + 1, c = idx ? idx[f * 3 + 2] : f * 3 + 2;
-    if (dropF.has(f)) { dropped++; continue; }
-    keep.push(a, b, c);
-  }
-  if (!dropped) return g;
-  const out = g.clone();
-  out.setIndex(keep);
-  out.computeVertexNormals();
-  return out;
-}
-
 export const STATUE_HEIGHT = 112; // world units (matches the scene layout from v2)
 
 export async function loadStatue(envMap, mats, onProgress) {
@@ -222,11 +181,7 @@ export async function loadStatue(envMap, mats, onProgress) {
       m.position.y -= box.min.y * s;
       // cap geometry is already in GLB world space -> same uniform scale + offset as the body
       sp.caps.forEach(c => { const cm = capMaterial(meta.id, envMap); cm.color && cm.color.multiplyScalar(.35); cm.metalness = 0; cm.roughness = 1; cm.envMapIntensity = 0; softSpot(cm); capShader(cm); const k = new THREE.Mesh(c.geo, cm); k.scale.setScalar(s); k.position.y = -box.min.y * s; k.receiveShadow = true; k.castShadow = false; k.name = 'cap_' + c.side; pivot.add(k); g.userData.mats.add(cm); g.userData.caps = (g.userData.caps || 0) + c.n; });
-      // v14: cut bronze waist spike; close gold beard hole with double-sided materials
-      if (meta.id === 'belly' && sid === 'v11o') { try { m.geometry = cutBronzeSpike(m.geometry); } catch (e) { console.warn('bronze cut', e); } }
-      const mat = m.material; mat.envMap = envMap; mat.envMapIntensity = 1.35;
-      mat.side = (meta.id === 'head') ? THREE.DoubleSide : THREE.FrontSide; // beard open-back fix
-      mat.color = new THREE.Color(COLOR[meta.id]);
+      const mat = m.material; mat.envMap = envMap; mat.envMapIntensity = 1.35; mat.side = THREE.FrontSide; mat.color = new THREE.Color(COLOR[meta.id]);
       mat.emissive = new THREE.Color(TINT[meta.id]); mat.emissiveMap = mat.map; mat.emissiveIntensity = 0;
       softSpot(mat, !S.fx ? {} : meta.id === 'chest' ? { hot: 1.25, cool: .45 } : meta.id === 'head' ? { hot: 2.2 } : {}); m.castShadow = m.receiveShadow = true; pivot.add(m); g.userData.mats.add(mat);
     });

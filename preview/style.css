@@ -815,12 +815,14 @@ body.presenting #coGlow, body.presenting #btGlow, body.presenting #ltc, body.pre
   box-shadow: 0 0 8px rgba(232,194,122,.5); transition: width .45s ease;
 }
 #presenter .pr-years {
-  position: absolute; left: 50%; top: 36px; transform: translateX(-50%);
-  font-family: Cinzel, serif; font-size: 28px; letter-spacing: .2em;
-  color: rgba(243,230,204,.55); text-shadow: 0 2px 18px #000; pointer-events: none;
-  opacity: 0; transition: opacity .5s;
+  position: absolute; left: 50%; top: 52px; transform: translateX(-50%);
+  font-family: Cinzel, serif; font-size: 22px; letter-spacing: .28em; text-transform: uppercase;
+  color: #f3e6cc; text-shadow: 0 2px 18px #000, 0 0 24px rgba(0,0,0,.8); pointer-events: none;
+  opacity: 0; transition: opacity .5s; z-index: 2;
+  background: rgba(12,8,5,.45); padding: 6px 18px; border: 1px solid rgba(232,194,122,.35); border-radius: 4px;
 }
 #presenter .pr-years.on { opacity: 1; }
+#presenter .pr-bar .pr-narr { max-width: 46vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #presenter .pr-extra {
   margin-top: 12px; font-family: 'Cormorant Garamond', serif; font-size: 18px;
   line-height: 1.4; color: rgba(232,194,122,.85);
@@ -907,14 +909,7 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
 
 /* Mobile: bottom darkening, year up, esc visible, number popups stacked */
 @media (max-width: 600px) {
-  body::after {
-    content: none; display: none; /* v14: history-only gradient lives in the v14 block */
-  }
-  body.history::after {
-    content: ''; display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 42vh;
-    background: linear-gradient(180deg, transparent, rgba(4,2,1,.72) 55%, rgba(0,0,0,.88));
-    pointer-events: none !important; z-index: 1;
-  }
+  /* gradient removed v15 */
   #hist .h-year { bottom: 150px !important; z-index: 6; }
   #hist .h-timeline { bottom: 62px !important; z-index: 6; }
   #presenter .pr-x, .modes .ghost, #ui .hint, #quiz .qz-x, #tale .tl-x {
@@ -1087,19 +1082,7 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
 #hist .h-timeline .track { top: 16px; height: 2px; }
 #hist .h-timeline .bands { top: 10px; }
 
-/* 10: bottom gradient ONLY in History, and ONLY over the map (beneath timeline + text) */
-body::after {
-  content: none !important; display: none !important;
-}
-body.history::after {
-  content: '' !important; display: block !important;
-  position: fixed; left: 0; right: 0; bottom: 0;
-  height: min(42vh, 320px);
-  pointer-events: none; z-index: 1; /* beneath timeline (z6) and text */
-  background: linear-gradient(180deg, rgba(4,3,2,0) 0%, rgba(4,3,2,.55) 45%, rgba(4,3,2,.88) 100%);
-}
-body.presenting::after,
-body:not(.history)::after { content: none !important; display: none !important; }
+/* 10: bottom gradient removed entirely (v15) */
 
 /* 12: Exploded mobile — icon + empire name + years only; no descriptions; clear of top-right icon stack */
 @media (max-width: 600px), (max-height: 450px) and (orientation: landscape) {
@@ -1171,7 +1154,7 @@ body:not(.history)::after { content: none !important; display: none !important; 
 #callouts .co-g { pointer-events: none !important; }
 /* only the actual icon/name buttons accept taps, and only when they don't sit on the stack */
 #callouts .co-icon, #callouts .co-name { pointer-events: auto; }
-body::after, body.history::after { pointer-events: none !important; }
+/* gradient gone */
 #btlink, #taletip, #v7toast, #vverse, .ev-strip, #hist .ev-strip { pointer-events: none !important; }
 
 /* Stack + presenter always above callouts/labels/gradient */
@@ -1266,4 +1249,16 @@ body.history #ev-sheet-btn, body.history #tools #ev-sheet-btn { display: flex !i
   }
   #presenter .pr-prev { left: 10px !important; right: auto !important; }
   #presenter .pr-next { left: auto !important; right: 10px !important; }
+}
+
+/* v15: NO bottom gradient in any view */
+body::after,
+body.history::after,
+body.presenting::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
 }

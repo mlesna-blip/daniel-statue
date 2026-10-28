@@ -5,8 +5,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { groundMaps, pavingMaps, radialSprite, rayTexture, rnd } from './textures.js';
-import { createPlume, createFire } from './fire.js';
+import { groundMaps, pavingMaps, radialSprite, rayTexture, rnd } from './textures.js?v=20261028v15';
+import { createPlume, createFire } from './fire.js?v=20261028v15';
 
 // Faint storm light sits behind the colossus' head.
 export const SUN_DIR = new THREE.Vector3(.2, .95, -1).normalize();
@@ -219,8 +219,9 @@ export function createWorld(container) {
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     const p = new THREE.Points(g, new THREE.PointsMaterial({ size, map: radialSprite(col, 32), transparent: true, opacity: op, depthWrite: false, blending: blend, color: 0xffffff })); scene.add(p); return p;
   };
-  const embers = mk('rgba(255,190,120,1)', THREE.AdditiveBlending, .5, .3, 150);
-  const ash = mk('rgba(72,58,42,1)', THREE.NormalBlending, 1.6, .78, 420);
+  // v15: no dark ash; light ash (embers) toned down
+  const embers = mk('rgba(255,190,120,1)', THREE.AdditiveBlending, .32, .16, 70);
+  const ash = null; // dropped
 
   // post
   const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
@@ -236,7 +237,7 @@ export function createWorld(container) {
     rays.children.forEach(p => { if (p.userData.base) p.material.opacity = p.userData.base * (.85 + .15 * Math.sin(t * p.userData.sp * .4 + p.userData.ph)); });
     fires.forEach(f => f.userData.tick(t)); wisps.userData.tick(t); nearWisps.userData.tick(t);
     brazierLights.forEach((L, i) => (L.intensity = world.mood.level * 125 * (.95 + .04 * Math.sin(t * 1.7 + i * 2) + .015 * Math.sin(t * 4.1 + i))));
-    for (const [p, sp] of [[embers, 1], [ash, .6]]) { const a = p.geometry.attributes.position.array, DN = a.length / 3; for (let i = 0; i < DN; i++) { a[i * 3] += dt * (1.5 + (i % 7) * .45) * sp; a[i * 3 + 1] += (Math.sin(t * .5 + i) * .4 + (sp < 1 ? -.35 : .25)) * dt; if (a[i * 3] > 160) a[i * 3] = -160; if (a[i * 3 + 1] < 0) a[i * 3 + 1] = 150; if (a[i * 3 + 1] > 150) a[i * 3 + 1] = 0; } p.geometry.attributes.position.needsUpdate = true; }
+    for (const [p, sp] of [[embers, 1]].filter(x => x[0])) { const a = p.geometry.attributes.position.array, DN = a.length / 3; for (let i = 0; i < DN; i++) { a[i * 3] += dt * (1.5 + (i % 7) * .45) * sp; a[i * 3 + 1] += (Math.sin(t * .5 + i) * .4 + .25) * dt; if (a[i * 3] > 160) a[i * 3] = -160; if (a[i * 3 + 1] < 0) a[i * 3 + 1] = 150; if (a[i * 3 + 1] > 150) a[i * 3 + 1] = 0; } p.geometry.attributes.position.needsUpdate = true; }
   };
   return world;
 }

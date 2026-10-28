@@ -36,7 +36,7 @@ export function createPresenter({ director, history, statue, v7 }) {
     if (st.sec && EXTRA[st.sec]) st.extra = EXTRA[st.sec];
     else if (st.stone) st.extra = EXTRA.stone;
     else if (st.k === 'assembled') st.extra = EXTRA.assembled;
-    if (st.ev !== undefined && events[st.ev]) st.year = String(events[st.ev].year || '');
+    if (st.ev !== undefined && events[st.ev]) st.year = fmtYear(events[st.ev].year) || events[st.ev].date || '';
     if (st.sec === 'head') st.year = st.year || '605 – 539 BC';
     if (st.sec === 'chest') st.year = st.year || '539 – 331 BC';
     if (st.sec === 'belly') st.year = st.year || '331 – 168 BC';
@@ -66,7 +66,7 @@ export function createPresenter({ director, history, statue, v7 }) {
   const btn = document.createElement('button'); btn.id = 'presenter-btn'; btn.className = 'clayc'; btn.title = 'Presenter mode (P)'; btn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/></svg>`;
   document.body.appendChild(btn);
   const q = s => el.querySelector(s);
-  let on = false, i = 0, auto = true, prevChoice = null, speakT = null, speakTok = 0;
+  let on = false, i = 0, auto = true, prevChoice = null, speakT = null, speakTok = 0; // auto mirrors narr.choice !== 'off'
   function clearSpot() {
     if (!statue || !statue.sections) return;
     director.list.forEach(sec => gsap.to(sec.userData, { hl: 0, dim: 0, duration: .9, overwrite: 'auto' }));
@@ -90,7 +90,7 @@ export function createPresenter({ director, history, statue, v7 }) {
   }
   // Narration picker covers every slide (statue sections via bible views, events via current guide, stone via bible)
   function speakSlide(s) {
-    if (!auto || !narr || !narr.on) return;
+    if (!narr || !narr.on) return;
     const NR = window.__NARR;
     if (s.ev !== undefined) {
       const g = narr.guide || 'bible';
@@ -105,9 +105,41 @@ export function createPresenter({ director, history, statue, v7 }) {
     if (x) narr.speak(x.text, 'v-' + key, 'bible');
   }
 
-  try { auto = localStorage.getItem('dan2-pres-narr') !== 'off'; } catch (e) { }
-  const setNarr = () => { q('.pr-narr').textContent = auto ? 'Narration · Auto' : 'Narration · Off'; q('.pr-narr').classList.toggle('on', auto); if (!narr) return;
-    if (!auto) { if (narr.choice !== 'off') narr.set('off', true); } else if (narr.choice === 'off') narr.set(prevChoice && prevChoice !== 'off' ? prevChoice : (narr.guide || 'bible'), true); };
+  // v15: full guide picker (Historian / Daniel / Neb / KJV / Kids / Off) — not Auto/Off
+  const SHORT = { historian: 'Historian', daniel: 'Daniel', nebuchadnezzar: 'Neb', bible: 'KJV', kids: 'Kids', off: 'Off' };
+  function guideOrder() {
+    const o = (narr && narr.order) ? narr.order.slice() : ['historian', 'daniel', 'nebuchadnezzar', 'bible', 'kids'];
+    return o.concat(['off']);
+  }
+  function labelFor(c) {
+    try { const n = narr && narr.names && narr.names(); if (n && n[c]) return n[c]; } catch (e) {}
+    return SHORT[c] || c;
+  }
+  try {
+    const saved = localStorage.getItem('dan2-pres-narr');
+    if (saved === 'off') auto = false;
+    else if (saved && saved !== 'auto' && saved !== 'on') { /* legacy guide id */ }
+  } catch (e) {}
+  const setNarr = () => {
+    if (!narr) { q('.pr-narr').textContent = 'Narration'; return; }
+    const c = narr.choice || 'off';
+    auto = c !== 'off';
+    q('.pr-narr').textContent = 'Narrator · ' + labelFor(c);
+    q('.pr-narr').classList.toggle('on', auto);
+    q('.pr-narr').title = 'Narrator: ' + labelFor(c) + ' (N to cycle)';
+  };
+  function cycleNarr() {
+    if (!narr) return;
+    const ord = guideOrder();
+    const cur = narr.choice || 'off';
+    let gi = ord.indexOf(cur); if (gi < 0) gi = 0;
+    const next = ord[(gi + 1) % ord.length];
+    narr.set(next, true);
+    auto = next !== 'off';
+    try { localStorage.setItem('dan2-pres-narr', next); } catch (e) {}
+    setNarr();
+    if (auto) speakSlide(steps[i]); else narr.stop();
+  };
   function go(n, instant) {
     i = Math.max(0, Math.min(steps.length - 1, n)); const s = steps[i];
     narr && narr.stop();
@@ -152,7 +184,7 @@ export function createPresenter({ director, history, statue, v7 }) {
   q('.pr-x').addEventListener('click', close);
   q('.pr-prev').addEventListener('click', () => { if (i <= 0) return; el.classList.remove('black'); go(i - 1); });
   q('.pr-next').addEventListener('click', () => { if (i >= steps.length - 1) return; el.classList.remove('black'); go(i + 1); });
-  q('.pr-narr').addEventListener('click', () => { auto = !auto; try { localStorage.setItem('dan2-pres-narr', auto ? 'auto' : 'off'); } catch (e) { } setNarr(); if (auto) speakSlide(steps[i]); else narr && narr.stop(); });
+  q('.pr-narr').addEventListener('click', () => cycleNarr());
   addEventListener('keydown', e => {
     if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement && document.activeElement.tagName)) return;
     if (!on) { if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); open(); } return; }

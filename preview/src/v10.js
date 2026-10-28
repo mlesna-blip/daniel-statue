@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import { LANGS } from './i18n.js';
+import { LANGS } from './i18n.js?v=20261028v15';
 // v10: corner controls everywhere (sound, narration dropdown, language), Bible readings for each view, recorded battle
 // sound ducked under narration, primary sources and staged event cards, Quiz, Tales of Daniel (furnace, tree, den and the
 // writing on the wall), and the camera turning to a beast when it is clicked.

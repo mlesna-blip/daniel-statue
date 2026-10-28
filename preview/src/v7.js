@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { makeTex } from './glyphs.js';
+import { makeTex } from './glyphs.js?v=20261028v15';
 // v7: prophecy beasts + clay tablet, number codex, guides, discovery tablet, share links + snapshot.
 const $ = h => { const t = document.createElement('template'); t.innerHTML = h.trim(); return t.content.firstChild; };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -126,7 +126,14 @@ export async function createV7({ world, director, history, callouts, glyphs, sta
   function stop() { synth && synth.cancel(); if (voEl) { voEl.pause(); voEl = null; window.__vo = null; } pending = 0; }
   // key: event index, 't-<tale>' or 'v-<view>'; who: force a narrator (views always read the KJV)
   function speak(text, key = Math.round(history.st.s), who) {
-    if (!narrate) return; stop(); const g0 = guide; if (who) guide = who; const f = voFile(key); guide = g0; if (typeof key === 'number') history.spokenAt = key;
+    if (!narrate) return;
+    // Per-event: never restart the same event index (History restart guard). Guide changes clear spokenAt.
+    if (typeof key === 'number' && history.spokenAt === key) {
+      try { console.debug('[narr] skip-repeat', key); } catch (e) {}
+      return;
+    }
+    stop(); const g0 = guide; if (who) guide = who; const f = voFile(key); guide = g0; if (typeof key === 'number') history.spokenAt = key;
+    try { console.info('[narr] Audio.play', { key, who: who || guide, file: !!f }); window.__narrPlays = (window.__narrPlays || []).concat([{ t: performance.now(), key, file: f || null }]); } catch (e) {}
     if (f) { const el = voEl = new Audio(f); window.__vo = el; pending = performance.now(); el.volume = 1; el.muted = !!(window.__v9 && !window.__v9.on); el.play().then(() => (pending = 0)).catch(() => { pending = 0; if (voEl === el) voEl = null; }); el.onended = () => { if (voEl === el) { voEl = null; window.__vo = null; } }; el.onerror = () => { pending = 0; if (voEl === el) voEl = null; }; return; }
     if (synth && text && !(window.__v9 && !window.__v9.on)) { const u = new SpeechSynthesisUtterance(text); u.lang = { en: 'en-US', ru: 'ru-RU', es: 'es-ES' }[LANG]; synth.speak(u); }
   }
@@ -138,8 +145,11 @@ export async function createV7({ world, director, history, callouts, glyphs, sta
   const listeners = [];
   function setChoice(c, silent) {
     choice = c; narrate = c !== 'off'; if (narrate) guide = c; try { localStorage.setItem(GK, c); if (narrate) localStorage.setItem('dan2-guide', c); } catch (e) { }
-    if (!narrate) stop(); history.refreshCard && history.refreshCard(); listeners.forEach(f => f(c));
-    if (narrate && !silent && history.active) { const l = history.guideLine(Math.round(history.st.s)); l && speak(l.text); }
+    if (!narrate) stop();
+    // Reset spokenAt so a guide change can re-read the current event once (via refreshCard → showEvent), not twice
+    if (history.active) history.spokenAt = null;
+    history.refreshCard && history.refreshCard(); listeners.forEach(f => f(c));
+    // Do NOT speak here — refreshCard → showEvent owns the single restart after camera settle
   }
   if (!synth && !window.fetch) narrate = false;
   const narr = { get choice() { return choice; }, get guide() { return guide; }, get on() { return narrate; }, order: ORDER, names: NAMES, set: setChoice, onChange: f => listeners.push(f), speak, stop, busy, voFile };

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { SECTIONS } from './data.js';
-import { bandsHeight, bullHeight, hammeredHeight, pbrSet, clayMaps, rnd } from './textures.js';
+import { SECTIONS } from './data.js?v=20261028v15';
+import { bandsHeight, bullHeight, hammeredHeight, pbrSet, clayMaps, rnd } from './textures.js?v=20261028v15';
 
 // ---------- Materials (tweak looks here) ----------
 export function makeMaterials(envMap) {

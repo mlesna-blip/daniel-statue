@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
-import { radialSprite } from './textures.js';
+import { radialSprite } from './textures.js?v=20261028v15';
 // v8: the four beasts of Daniel 7 as dark metal statues on low plinths flanking the image, mostly in shadow.
 // Whichever kingdom is active (hover, exploded selection, beast tablet or the current empire in history)
 // wakes its beast with a warm pool of light; the rest stay dim. Loaded lazily after the statue.
@@ -18,7 +18,7 @@ export async function createBeasts({ world, statue, history }) {
   const top = world.PLAT_TOP;
   const plinthMat = new THREE.MeshStandardMaterial({ color: 0x2a211b, roughness: .95, envMap: world.envMap, envMapIntensity: .08 });
   const plinthGeo = new THREE.BoxGeometry(1, 1, 1);
-  const light = new THREE.SpotLight(0xffb070, 0, 140, THREE.MathUtils.degToRad(32), .65, 1.2); light.position.set(0, 40, 30); light.castShadow = false; group.add(light, light.target);
+  const light = new THREE.SpotLight(0xffb070, 0, 70, THREE.MathUtils.degToRad(24), .8, 1.4); light.position.set(0, 40, 30); group.add(light, light.target);
   const glowMat = new THREE.MeshBasicMaterial({ map: radialSprite('rgba(255,150,70,1)'), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0, toneMapped: false });
   const items = {}; const pickables = [];
   for (const b of BEASTS) {
@@ -155,22 +155,21 @@ export async function createBeasts({ world, statue, history }) {
       const want = hist ? (hShown && Math.abs(items[hShown].sx) < .999 ? hShown : null) || hShown : activeSec ? secToBeast[activeSec] : null; if (want) cur = want;
       for (const id in items) {
         const it = items[id], goal = want === id ? 1 : 0; it.k += (goal - it.k) * Math.min(1, dt * 2.2);
-        const base = hist ? (.45 + it.k * .55) : (.2 + it.k * .8);
-        it.mats.forEach(m => { m.color.copy(m.userData.c0).multiplyScalar(base); m.emissiveIntensity = it.k * (hist ? .85 : .12); m.envMapIntensity = .35 + it.k * (hist ? 1.1 : .6); });
-        it.glow.visible = !hist; // plinth glow off in History
+        const base = .2 + it.k * .8; it.mats.forEach(m => { m.color.copy(m.userData.c0).multiplyScalar(base); m.emissiveIntensity = it.k * (hist ? .38 : .12); m.envMapIntensity = .3 + it.k * .6; });
+        it.glow.visible = !hist;
         it.glow.material.opacity = hist ? 0 : it.k * .22;
       }
       const it = cur && items[cur]; const k = it ? it.k : 0;
       if (it) {
         const p = it.holder.position;
-        // Aim from camera-side above at the beast mid; History needs a hot key or the dark metal reads as a void
-        light.position.set(p.x + 12, p.y + 48, p.z + 36);
-        light.target.position.set(p.x, p.y + 12, p.z);
+        // Soft spotlight only (pre-v14 levels) — seating kept
+        light.position.set(p.x * .7, p.y + 34, p.z + 26);
+        light.target.position.set(p.x, p.y + 5, p.z);
         light.target.updateMatrixWorld();
-        light.distance = hist ? 200 : 140;
-        light.angle = THREE.MathUtils.degToRad(hist ? 40 : 32);
+        light.distance = 70;
+        light.angle = THREE.MathUtils.degToRad(24);
       }
-      light.intensity = k * (hist ? 9000 : 2600);
+      light.intensity = k * 2600;
     },
   };
 }

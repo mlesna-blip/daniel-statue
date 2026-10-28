@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import { SECTIONS, STONE, CAPTIONS } from './data.js';
-import { STATUE_FX } from './statueGLB.js';
+import { SECTIONS, STONE, CAPTIONS } from './data.js?v=20261028v15';
+import { STATUE_FX } from './statueGLB.js?v=20261028v15';
 
 // Camera presets (position, orbit target). Tune the framing here.
 export const CAMS = {

@@ -1,6 +1,6 @@
 // v8: small UI glue. Beast line icons sit above each empire name on the history timeline; the current
 // empire's icon and name grow and glow while playback is inside it.
-import { SEC_BEAST } from './callouts.js';
+import { SEC_BEAST } from './callouts.js?v=20261028v15';
 export function createV8({ world, director, history, v7, params }) {
   const bands = document.querySelectorAll('#hist .h-timeline .band');
   bands.forEach(b => {

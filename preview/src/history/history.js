@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
-import { createMap } from './map.js';
-import { createDrone } from './audio.js';
+import { createMap } from './map.js?v=20261028v15';
+import { createDrone } from './audio.js?v=20261028v15';
 
 // Per-era mood: fog tint, ambient tint, key-light temperature. Everything stays dark and fire-lit.
 const MOOD = {
@@ -93,18 +93,37 @@ export async function createHistory({ world, statue, director, params }) {
   // v10: playback is event-driven. It glides to the next event, then holds there until the narration for that event has
   // finished (never cutting a voice off), then continues on its own. No extra presses needed.
   function play() {
-    setFree(false); closeEvidence(); clearTimeout(api._narrT); api._narrTok++; // cancel pending idle-speak; play/dwell owns narration
+    setFree(false); closeEvidence(); api._autoplayPending = false; clearTimeout(api._autoplayT); api._autoplayT = null; clearTimeout(api._narrT); api._narrTok++; // cancel pending idle-speak; play/dwell owns narration
     st.playing = true; root.classList.add('playing'); q('[data-a=play]').classList.add('on'); q('.pp-state').textContent = 'Playing'; q('[data-a=play]').title = 'Pause (Space)';
     if (st.s >= N - 1.001) { st.s = 0; setS(0); }
     const from = Math.floor(st.s + 1e-3);
     if (st.s - from > .001) playTl = gsap.to(st, { s: from + 1, duration: 6 * (1 - (st.s - from)), ease: 'none', onUpdate: () => setS(st.s), onComplete: () => dwell(true) });
     else dwell(!api.spokenAt || api.spokenAt !== Math.round(st.s));
   }
+  // Single narration owner while playing: dwell schedules speak via _narrTok; ignore repeats for same event.
+  function requestSpeak(idx, delay) {
+    clearTimeout(api._narrT);
+    const tok = ++api._narrTok;
+    const wait = delay == null ? 700 : delay;
+    api._narrT = setTimeout(() => {
+      if (api._narrTok !== tok || !st.active || window.__presenter) return;
+      if (Math.round(st.s) !== idx) return;
+      if (api.spokenAt === idx && api.narrBusy && api.narrBusy()) return;
+      if (api.spokenAt === idx) return;
+      try { console.info('[narr] fire', { idx, tok, playing: st.playing, via: 'requestSpeak' }); } catch (e) {}
+      if (api.onEvent) api.onEvent(idx);
+    }, wait);
+  }
   function dwell(speakNow) {
     if (!st.playing) return; const idx = Math.round(st.s), t0 = performance.now(); let quietSince = 0;
-    if (speakNow && api.onEvent) setTimeout(() => st.playing && Math.round(st.s) === idx && api.onEvent(idx), api.lastBattleAt && performance.now() - api.lastBattleAt < 2500 ? 1400 : 250);
+    if (speakNow) {
+      const battleWait = api.lastBattleAt && performance.now() - api.lastBattleAt < 2500 ? 1400 : 0;
+      requestSpeak(idx, Math.max(700, battleWait)); // after camera settles
+    }
     const chk = () => {
       if (!st.playing) return; const now = performance.now(), busy = api.narrBusy ? api.narrBusy() : false;
+      // Wait until the scheduled speak has actually started before counting "quiet"
+      if (speakNow && api.narrOn && api.narrOn() && api.spokenAt !== idx) { quietSince = 0; holdT = setTimeout(chk, 150); return; }
       if (busy) quietSince = 0; else if (!quietSince) quietSince = now;
       const minHold = api.narrOn && api.narrOn() ? 1800 : 3500;
       if (now - t0 > minHold && quietSince && now - quietSince > 900) next(); else holdT = setTimeout(chk, 150);
@@ -170,16 +189,10 @@ export async function createHistory({ world, statue, director, params }) {
     gsap.to(hemi.color, { ...hex(m.hemi), duration: 2.5 }); gsap.to(key.color, { ...hex(m.key), duration: 2.5 });
     gsap.to(map.uniforms.uAmb.value, { x: m.amb[0], y: m.amb[1], z: m.amb[2], duration: 2.5 });
     drone.setEra(e.metal); if (prevMetal === e.metal) drone.event();
-    // Speak once after camera settles; cancel any prior pending speak (guards double-start from Assembled/Exploded enter)
-    if (api.onEvent && st.active && !st.playing && !window.__presenter) {
-      clearTimeout(api._narrT);
-      const tok = ++api._narrTok;
-      api._narrT = setTimeout(() => {
-        if (api._narrTok !== tok || !st.active || st.playing || window.__presenter) return;
-        if (Math.round(st.s) !== idx) return;
-        if (api.spokenAt === idx) return; // already spoken this event
-        api.onEvent(idx);
-      }, st.intro < 1 ? 900 : 700);
+    // Idle (paused) speak only — while playing, dwell/requestSpeak is the sole owner.
+    // Skip during enter autoplay window so enter→showEvent and enter→play cannot double-fire.
+    if (api.onEvent && st.active && !st.playing && !window.__presenter && !api._autoplayPending) {
+      requestSpeak(idx, st.intro < 1 ? 900 : 700);
     }
     root.querySelectorAll('.band').forEach(b => b.classList.toggle('cur', b.dataset.m === e.metal));
     // v6: tight spotlight on the active section
@@ -202,12 +215,23 @@ export async function createHistory({ world, statue, director, params }) {
     if (!instant && !params.has('intro')) { st.intro = 0; world.camera.position.copy(INTRO_CAM.pos); world.controls.target.copy(INTRO_CAM.target); gsap.to(st, { intro: 1, duration: 6.5, ease: 'power2.inOut', delay: .8 }); }
     else if (params.has('intro')) { st.intro = +params.get('intro'); }
     else st.intro = 1;
-    if (!params.has('nop') && !(params.has('static') && !params.has('autoplay'))) { gsap.delayedCall(st.intro >= 1 ? .6 : 7.4, () => { if (st.active && !st.playing && !st.free && !window.__presenter) play(); }); }
+    api._autoplayPending = false;
+    clearTimeout(api._autoplayT);
+    if (!params.has('nop') && !(params.has('static') && !params.has('autoplay'))) {
+      api._autoplayPending = true; // suppress showEvent idle-speak until play owns narration
+      const delayMs = (st.intro >= 1 ? 0.6 : 7.4) * 1000;
+      api._autoplayT = setTimeout(() => {
+        api._autoplayPending = false; api._autoplayT = null;
+        if (!st.active) return;
+        if (!st.playing && !st.free && !window.__presenter) play();
+        else if (!st.playing && !window.__presenter) requestSpeak(Math.round(st.s), 700);
+      }, delayMs);
+    }
     if (st.free && params.has('free')) { world.camera.position.set(-150, 70, 330); world.controls.target.set(0, 10, 120); }
     else if (st.intro >= 1) { directed(st.s); world.camera.position.copy(goalP); world.controls.target.copy(goalT); }
   }
   function exit() {
-    pause(); closeEvidence(); gsap.killTweensOf(st); st.active = false; st.intro = 1; document.body.classList.remove('history'); director.historyMode = false; root.classList.remove('on'); hideCaps(false); setFree(false); world.controls.enabled = true;
+    clearTimeout(api._autoplayT); api._autoplayT = null; api._autoplayPending = false; pause(); closeEvidence(); gsap.killTweensOf(st); st.active = false; st.intro = 1; document.body.classList.remove('history'); director.historyMode = false; root.classList.remove('on'); hideCaps(false); setFree(false); world.controls.enabled = true;
     director.list.forEach(sec => gsap.to(sec.userData, { hl: 0, dim: 0, duration: .8, overwrite: 'auto' })); director.assemble(); drone.mute();
     
     gsap.to(world.scene.fog.color, { ...hex(NORMAL_FOG), duration: 1.5 }); gsap.to(hemi.color, { ...hex(base.hemiC.getHex()), duration: 1.5 }); gsap.to(key.color, { ...hex(base.keyC.getHex()), duration: 1.5 });
@@ -245,6 +269,6 @@ export async function createHistory({ world, statue, director, params }) {
   function canvasClick() { }
   // v12 presenter: eased jump to one event, no autoplay
   function goTo(i, instant) { pause(); setFree(false); gsap.killTweensOf(st, 's'); if (instant) setS(i); else gsap.to(st, { s: i, duration: Math.min(4, 1.6 + Math.abs(st.s - i) * .35), ease: 'power2.inOut', onUpdate: () => setS(st.s) }); }
-  const api = { _narrTok: 0, _narrT: null, goTo, drone, enter, exit, update, map, st, canvasClick, pause, play, refreshCard: () => { const c = curEv; curEv = -1; if (c >= 0) showEvent(c); }, get active() { return st.active; }, get calloutSection() { return st.active ? activeSec : null; }, get calloutAlpha() { if (st.free || st.intro < 1) return 0; if (params.has('co')) return 1; const u = (performance.now() - (st.coT || -1e9)) / 1000; return u < .6 ? 0 : u < 1.4 ? (u - .6) / .8 : u < 4.6 ? 1 : Math.max(0, 1 - (u - 4.6) / 1.2); }, get metal() { return st.active && curEv >= 0 ? events[curEv].metal : null; }, events };
+  const api = { _narrTok: 0, _narrT: null, _autoplayPending: false, _autoplayT: null, goTo, drone, enter, exit, update, map, st, canvasClick, pause, play, refreshCard: () => { const c = curEv; curEv = -1; if (c >= 0) showEvent(c); }, get active() { return st.active; }, get calloutSection() { return st.active ? activeSec : null; }, get calloutAlpha() { if (st.free || st.intro < 1) return 0; if (params.has('co')) return 1; const u = (performance.now() - (st.coT || -1e9)) / 1000; return u < .6 ? 0 : u < 1.4 ? (u - .6) / .8 : u < 4.6 ? 1 : Math.max(0, 1 - (u - 4.6) / 1.2); }, get metal() { return st.active && curEv >= 0 ? events[curEv].metal : null; }, events };
   return api;
 }
