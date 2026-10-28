@@ -36,7 +36,7 @@ export async function createBeasts({ world, statue, history }) {
     const pivot = new THREE.Group(); m.position.set(-c.x, -tmpBox.min.y, -c.z); pivot.add(m); pivot.position.y = 1.6; pivot.rotation.y = b.face; it.holder.add(pivot);
     m.traverse(o => { if (!o.isMesh) return; o.castShadow = true; o.receiveShadow = true; o.userData.beast = b.id; pickables.push(o);
       const mt = o.material; mt.envMap = world.envMap; mt.envMapIntensity = .35; mt.userData.c0 = mt.color.clone(); mt.emissive = new THREE.Color(0xffa860); mt.emissiveMap = mt.map; mt.emissiveIntensity = 0; it.mats.push(mt); });
-    it.model = pivot;
+    it.model = pivot; if (hWas) { it.foot = null; it.grounded = false; }
   }
   // statue first, then the beasts one at a time so they never compete with the first paint
   (async () => { for (const b of BEASTS) { try { await load(b); } catch (e) { console.warn('beast', b.id, e); } } window.__beastsLoaded = true; })();
@@ -59,14 +59,15 @@ export async function createBeasts({ world, statue, history }) {
     try { if (history && history.map && history.map.groundAt) return history.map.groundAt(x, z); } catch (e) { }
     return top;
   }
-  function seatOnGround(it) {
-    // Place holder so the model's bbox min.y sits on the map surface (no floating).
+  function footOffset(it) {
+    // Distance from holder origin to the lowest point of the beast mesh, after H_SC scale.
+    if (!it.model) return 0;
     it.holder.updateMatrixWorld(true);
-    const box = new THREE.Box3();
-    if (it.model) box.setFromObject(it.model); else box.setFromObject(it.holder);
-    const gy = groundY(it.holder.position.x, it.holder.position.z);
-    const dy = gy - box.min.y;
-    it.holder.position.y += dy;
+    const box = new THREE.Box3().setFromObject(it.model);
+    return it.holder.position.y - box.min.y; // how far the feet are below the holder origin
+  }
+  function seatOnGround(it) {
+    it.foot = footOffset(it); // cache per beast (pivots differ — why only the fourth looked right)
     it.grounded = true;
   }
   function slideTo(it, goal, delay = 0, from) {
@@ -102,7 +103,7 @@ export async function createBeasts({ world, statue, history }) {
         const it = items[want];
         it.holder.position.set(H_REST.x, groundY(H_REST.x, H_REST.z) - 14, H_REST.z); // start buried
         it.holder.rotation.y = Math.atan2(world.camera.position.x - H_REST.x, world.camera.position.z - H_REST.z) + .55 - it.face;
-        it.holder.visible = true; it.grounded = false;
+        it.holder.visible = true; it.grounded = false; it.foot = null;
         slideTo(it, 0, hShown ? .35 : .15, 1); // rise in (sx 1→0)
         const d = mkDust(it); d.material.opacity = 0; d.scale.set(10, 4, 1);
       }
@@ -119,10 +120,12 @@ export async function createBeasts({ world, statue, history }) {
       const rising = it.sFrom > it.sGoal; // sFrom=1 goal=0 → rising; sFrom=0 goal=1 → sinking
       it.holder.visible = it.sx < .999 || (it.sGoal !== undefined);
       if (!it.holder.visible) continue;
-      // vertical only — no spin, no lateral slide
+      // vertical only — no spin, no lateral slide. Y = surface + footOffset - bury.
       const bury = 14 * it.sx;
       const gy = groundY(H_REST.x, H_REST.z);
-      it.holder.position.set(H_REST.x, gy - bury, H_REST.z);
+      if (it.model && it.foot == null) seatOnGround(it);
+      const foot = it.foot || 0;
+      it.holder.position.set(H_REST.x, gy + foot - bury, H_REST.z);
       // face camera (set once while rising; hold while sunk)
       if (it.sx < .85) {
         const face = Math.atan2(cam.position.x - it.holder.position.x, cam.position.z - it.holder.position.z) + .55 - it.face;
@@ -141,7 +144,6 @@ export async function createBeasts({ world, statue, history }) {
         const sc = 12 + (1 - Math.abs(it.sx - .5) * 2) * 16;
         it.dust.scale.set(sc, sc * .4, 1);
       }
-      if (it.sx === 0 && !it.grounded) seatOnGround(it);
     }
   }
   return {

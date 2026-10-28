@@ -10,7 +10,7 @@ function displace(geo, amp, freq, f = (v, n) => 1 + (n - .5) * amp) { const p = 
 
 export function createStone(envMap) {
   const geo = displace(new THREE.IcosahedronGeometry(6, 4), .55, .35);
-  const stone = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x1a1714, roughness: .98, metalness: 0, flatShading: true, envMap, envMapIntensity: .15, emissive: 0x2a1a0c, emissiveIntensity: 0 }));
+  const stone = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: 0x0e0c0a, roughness: .98, metalness: 0, flatShading: true, envMap, envMapIntensity: .15, emissive: 0x100c08, emissiveIntensity: 0 }));
   stone.castShadow = true; stone.visible = false; return stone;
 }
 export function createMountain(envMap) {

@@ -44,6 +44,19 @@ export async function createHistory({ world, statue, director, params }) {
   const sheetBtn = document.createElement('button'); sheetBtn.id = 'ev-sheet-btn'; sheetBtn.className = 'clay-btn'; sheetBtn.innerHTML = '<b>Event</b>'; sheetBtn.title = 'Open event card';
   const strip = document.createElement('div'); strip.className = 'ev-strip'; strip.id = 'ev-strip';
   document.body.appendChild(sheetBtn); document.body.appendChild(strip);
+
+  const cardEl = root.querySelector('.card');
+  if (cardEl && !cardEl.querySelector('.c-x')) {
+    const cx = document.createElement('button'); cx.className = 'c-x'; cx.type = 'button'; cx.textContent = '✕ Close';
+    cardEl.appendChild(cx);
+    const closeCard = () => { cardEl.classList.remove('on', 'sheet-on'); if (sheetBtn) sheetBtn.classList.remove('on'); };
+    cx.addEventListener('click', e => { e.stopPropagation(); closeCard(); });
+    document.addEventListener('pointerdown', e => {
+      if (!cardEl.classList.contains('on') && !cardEl.classList.contains('sheet-on')) return;
+      if (e.target.closest('.card, #ev-sheet-btn, .ev-btn, .h-timeline, .h-ctrl')) return;
+      closeCard();
+    });
+  }
   sheetBtn.addEventListener('click', () => { const c = q('.card'); c.classList.add('sheet-on'); c.classList.add('on'); });
   // swipe/close: tap outside or Esc already handled; add a close on second tap of strip area
   root.addEventListener('click', e => { if (e.target.classList.contains('card') || e.target.closest('.card .c-in')) return; if (matchMedia('(max-width:600px)').matches) q('.card').classList.remove('sheet-on'); });
@@ -163,8 +176,9 @@ export async function createHistory({ world, statue, director, params }) {
     }
   }
 
+  function hideCaps(hide) { try { const st = window.__statue || statue; if (!st) return; st.root && st.root.traverse(o => { if (o.isMesh && /^cap_/.test(o.name || '')) { o.visible = !hide ? true : false; if (hide && o.material) { const m = o.material; if (m.color) m.color.setHex(0x140e0a); if ('emissive' in m) m.emissive.setHex(0x000000); if (m.userData && m.userData.capU && m.userData.capU.uGlow) m.userData.capU.uGlow.value.setRGB(0,0,0); m.envMapIntensity = 0; m.needsUpdate = true; } } }); } catch (e) {} }
   function enter(instant) { if (world.topKey) { gsap.killTweensOf(world.topKey); world.topKey.intensity = 0; }
-    st.active = true; document.body.classList.add('history'); director.historyMode = true; director.ui.hidePanel(); root.classList.add('on');
+    st.active = true; document.body.classList.add('history'); director.historyMode = true; director.ui.hidePanel(); root.classList.add('on'); hideCaps(true);
     curEv = -1; setFree(params.has('free') && instant); setS(st.s);
     gsap.to(hemi, { intensity: .16, duration: 1.5 }); gsap.to(key, { intensity: 7.5, duration: 1.5 });
     if (instant) statue.root.scale.setScalar(HS); else gsap.to(statue.root.scale, { x: HS, y: HS, z: HS, duration: 2.5, ease: 'power2.inOut' });
@@ -176,7 +190,7 @@ export async function createHistory({ world, statue, director, params }) {
     else if (st.intro >= 1) { directed(st.s); world.camera.position.copy(goalP); world.controls.target.copy(goalT); }
   }
   function exit() {
-    pause(); closeEvidence(); gsap.killTweensOf(st); st.active = false; st.intro = 1; document.body.classList.remove('history'); director.historyMode = false; root.classList.remove('on'); setFree(false); world.controls.enabled = true;
+    pause(); closeEvidence(); gsap.killTweensOf(st); st.active = false; st.intro = 1; document.body.classList.remove('history'); director.historyMode = false; root.classList.remove('on'); hideCaps(false); setFree(false); world.controls.enabled = true;
     director.list.forEach(sec => gsap.to(sec.userData, { hl: 0, dim: 0, duration: .8, overwrite: 'auto' })); director.assemble(); drone.mute();
     
     gsap.to(world.scene.fog.color, { ...hex(NORMAL_FOG), duration: 1.5 }); gsap.to(hemi.color, { ...hex(base.hemiC.getHex()), duration: 1.5 }); gsap.to(key.color, { ...hex(base.keyC.getHex()), duration: 1.5 });

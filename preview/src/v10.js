@@ -21,6 +21,7 @@ const TALE_AT = { 1: ['furnace', 'tree'], 2: ['wall', 'den'] };
 export async function createV10({ world, director, history, v7, statue, params }) {
   if (params.has('static')) gsap.ticker.lagSmoothing(0); // headless test renders: let tweens run in real time
   const NR = window.__NARR, LANG = window.__LANG || 'en', narr = v7.narr, T = s => (window.__tr ? window.__tr(s) : s);
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const [SRC, QUIZ] = await Promise.all([fetch('data/sources.json').then(r => r.json()), fetch('data/quiz.json').then(r => r.json())]); const QLEVELS = QUIZ.levels || [{ id: 'all', name: 'Quiz', pass: 6, questions: QUIZ }];
   const hist = document.getElementById('hist'), hctrl = hist.querySelector('.h-ctrl');
   const pauseHist = () => history.active && history.st.playing && history.pause();
@@ -45,7 +46,7 @@ export async function createV10({ world, director, history, v7, statue, params }
   }, 'Language');
   const snd = hctrl.querySelector('.snd');
   const vctrl = $(`<div id="vctrl"></div>`); document.body.appendChild(vctrl);
-  function placeCtrls() { const host = history.active ? hctrl : vctrl; narrDD.style.display = history.active ? '' : 'none'; if (snd.parentNode !== host) { host.appendChild(snd); host.appendChild(narrDD); host.appendChild(langDD); } }
+  function placeCtrls() { const host = history.active ? hctrl : vctrl; narrDD.style.display = ''; narrDD.classList.toggle('in-hist', !!history.active); if (snd.parentNode !== host || narrDD.parentNode !== host || langDD.parentNode !== host) { host.appendChild(snd); host.appendChild(narrDD); host.appendChild(langDD); } }
   placeCtrls(); document.documentElement.lang = LANG;
 
   // ---------------------------------------------------------------- Bible reading in Assembled / Exploded / focus / Stone
@@ -106,7 +107,7 @@ export async function createV10({ world, director, history, v7, statue, params }
   function startQuiz(lv) {
     curLv = QLEVELS.find(l => l.id === lv) || QLEVELS[0]; QZ = curLv.questions; order = shuffle(QZ.map((_, i) => i)); qi = 0; score = 0;
     qz.querySelector('.qz-pick').hidden = true; qz.querySelector('.qz-play').hidden = false;
-    qz.querySelector('.qz-h').textContent = T(curLv.name); showQ();
+    const ph = qz.querySelector('.qz-play .qz-h'); if (ph) ph.textContent = T(curLv.name); showQ();
   }
   function showQ() {
     const x = QZ[order[qi]]; answered = false; qz.classList.remove('done', 'answered');
@@ -115,9 +116,14 @@ export async function createV10({ world, director, history, v7, statue, params }
     opts.forEach(([t, i]) => { const b = $(`<button data-i="${i}">${esc(t)}</button>`); a.appendChild(b); });
     qz.querySelector('.qz-fb').innerHTML = ''; qz.querySelector('.qz-next').disabled = true; qz.querySelector('.qz-next').textContent = T(qi < QZ.length - 1 ? 'Next' : 'See result');
   }
+  qz.querySelectorAll('[data-lv]').forEach(btn => {
+    btn.type = 'button';
+    btn.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); startQuiz(btn.dataset.lv); });
+  });
   qz.addEventListener('click', e => {
-    const lv = e.target.closest('[data-lv]'); if (lv) return startQuiz(lv.dataset.lv);
+    if (e.target.closest('[data-lv]')) return; // handled above
     if (e.target.closest('.qz-x') || e.target === qz) { qz.classList.remove('on'); return; }
+    if (e.target.closest('.qz-tab') && !e.target.closest('.qz-a, .qz-next, .qz-x')) return; // don't dismiss on tablet chrome
     const b = e.target.closest('.qz-a button'); const x = QZ[order[qi]];
     if (b && !answered && x) {
       answered = true; const ok = b.dataset.i === '0'; if (ok) score++; b.classList.add(ok ? 'ok' : 'no');
@@ -162,8 +168,23 @@ export async function createV10({ world, director, history, v7, statue, params }
     const ch = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 3.2, 10, 6), brick); ch.position.set(4, 44, -3); g.add(ch);
     const mouth = new THREE.Mesh(new THREE.PlaneGeometry(9, 11), new THREE.MeshBasicMaterial({ color: 0xff7a2a, transparent: true, opacity: .55, fog: false })); mouth.position.set(0, 10.5, 16.6); g.add(mouth); mouth.userData.flick = 1;
     const arch = new THREE.Mesh(new THREE.CircleGeometry(4.5, 10, 0, Math.PI), mouth.material); arch.position.set(0, 16, 16.6); g.add(arch);
+    // v13b: four figures in the mouth — three men + a distinct 4th (taller, brighter outline)
+    const figM = new THREE.MeshBasicMaterial({ color: 0x0a0604, transparent: true, opacity: .92, fog: false, depthWrite: false });
+    const figGlow = new THREE.MeshBasicMaterial({ color: 0xffc27a, transparent: true, opacity: .55, fog: false, depthWrite: false, blending: THREE.AdditiveBlending });
+    const men = new THREE.Group(); men.position.set(0, 9.2, 16.2); men.userData.flick = true;
+    [[-2.4, 0, 1], [0, 0, 0], [2.4, 0, 1]].forEach(([x, y, z], i) => {
+      const body = new THREE.Mesh(new THREE.CapsuleGeometry(.55, 2.2, 3, 6), figM); body.position.set(x, 1.6, z); men.add(body);
+      const head = new THREE.Mesh(new THREE.SphereGeometry(.42, 6, 5), figM); head.position.set(x, 3.2, z); men.add(head);
+    });
+    // 4th figure — taller, luminous outline ("like the Son of God")
+    const fourth = new THREE.Group(); fourth.position.set(0, 0.4, -0.6);
+    const fBody = new THREE.Mesh(new THREE.CapsuleGeometry(.7, 3.4, 3, 6), figM); fBody.position.y = 2.2; fourth.add(fBody);
+    const fHead = new THREE.Mesh(new THREE.SphereGeometry(.5, 6, 5), figM); fHead.position.y = 4.4; fourth.add(fHead);
+    const halo = new THREE.Mesh(new THREE.CapsuleGeometry(.95, 3.8, 3, 8), figGlow); halo.position.y = 2.3; fourth.add(halo);
+    const hGlow = glow(8, .35); hGlow.position.set(0, 3.5, .5); fourth.add(hGlow); men.add(fourth);
+    g.add(men);
     const gl = glow(34, .32); gl.position.set(0, 12, 20); g.add(gl); const gl2 = glow(14, .25); gl2.position.set(4, 51, -3); g.add(gl2);
-    g.rotation.y = .45; mk('furnace', g, 18, [gl, gl2, mouth]);
+    g.rotation.y = .45; mk('furnace', g, 18, [gl, gl2, mouth, hGlow]);
   }
   { // the great tree (Dan 4): broad canopy, the stump bound with a band of iron and brass
     const g = new THREE.Group(); const trunk = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 6.5, 40, 7), bark); trunk.position.y = 20; g.add(trunk);
@@ -215,13 +236,13 @@ export async function createV10({ world, director, history, v7, statue, params }
         box.setFromObject(m); const c = box.getCenter(new THREE.Vector3()); m.position.set(-c.x, -box.min.y, -c.z);
         const piv = new THREE.Group(); piv.add(m); piv.rotation.y = o.rot - TALES[k].g.rotation.y;
         m.traverse(x => { if (!x.isMesh) return; x.userData.tale = k; x.castShadow = false; x.receiveShadow = true; pickables.push(x);
-          const mt = x.material; mt.envMapIntensity = .25; mt.emissive = new THREE.Color(o.emi); mt.emissiveMap = mt.map; mt.emissiveIntensity = o.ei;
+          const mt = x.material; mt.envMapIntensity = .08; mt.emissive = new THREE.Color(o.emi); mt.emissiveMap = mt.map; mt.emissiveIntensity = Math.min(o.ei, .06); mt.color && mt.color.multiplyScalar(.35);
           mt.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', `#ifdef USE_FOG\n float fdK = fogDensity * ${o.fogK.toFixed(2)}; float fogFactor = 1.0 - exp( - fdK * fdK * vFogDepth * vFogDepth ); gl_FragColor.rgb = mix( gl_FragColor.rgb, mix( fogColor, vec3( .11, .06, .03 ), .7 ), fogFactor * .92 );\n#endif`); }; // thinner, warmer haze
           mt.customProgramCacheKey = () => 'talehq' + o.fogK; mt.needsUpdate = true; });
         TALES[k].g.children.forEach(ch => { if (ch.isMesh && !ch.userData.flick) ch.visible = false; if (ch.userData.flick) ch.visible = false; });
         TALES[k].g.add(piv); TALES[k].hq = piv; TALES[k].focusY = k === 'tree' ? 40 : 22; TALES[k].center.y = TALES[k].focusY;
-        if (k === 'tree') { const l = new THREE.PointLight(0xffc27a, 3, 220, 0); l.position.set(0, 50, 70); TALES[k].g.add(l); }
-        if (k === 'furnace') { const l = new THREE.PointLight(0xff7a2a, 2.5, 120, 0); l.position.set(0, 14, 30); TALES[k].g.add(l); }
+        if (k === 'tree') { const l = new THREE.PointLight(0xffc27a, .35, 220, 0); l.position.set(0, 50, 70); TALES[k].g.add(l); TALES[k].hqLight = l; }
+        if (k === 'furnace') { const l = new THREE.PointLight(0xff7a2a, .3, 120, 0); l.position.set(0, 14, 30); TALES[k].g.add(l); TALES[k].hqLight = l; }
       }).catch(e => console.warn('tale hq', k, e));
     }
   }
@@ -243,6 +264,7 @@ export async function createV10({ world, director, history, v7, statue, params }
   document.addEventListener('pointerdown', e => { if (!e.target.closest('#talelist, #tales-btn')) tlist.classList.remove('on'); });
   let openK = null, camBack = null;
   function openTale(k, noCam) { loadHQ();
+    const _t = TALES[k]; if (_t && _t.hqLight) _t.hqLight.intensity = .55;
     const t = NR.tales[k], kj = NR.bible.tales[k]; openK = k; seen.add(k); try { localStorage.setItem(TK, JSON.stringify([...seen])); } catch (e) { } renderTales();
     const g = narr.guide, line = t[g === 'bible' ? 'historian' : g] || t.historian;
     tale.querySelector('.tl-img').src = `data/tales/${k}.webp`; tale.querySelector('.tl-ref').textContent = kj.ref; tale.querySelector('.tl-title').textContent = t.title; tale.querySelector('.tl-kjv').textContent = kj.text; tale.querySelector('.tl-text').textContent = line;
@@ -251,7 +273,8 @@ export async function createV10({ world, director, history, v7, statue, params }
     if (narr.on) narr.speak(g === 'bible' ? kj.text : line, 't-' + k);
     if (!noCam && !history.active) focusTale(k);
   }
-  function closeTale() { if (!openK) return; openK = null; tale.classList.remove('on'); narr.stop(); release(); }
+  function closeTale() { if (!openK) return; const was = openK; openK = null; tale.classList.remove('on'); narr.stop(); release();
+    const t = TALES[was]; if (t) { t.h = 0; if (t.hqLight) t.hqLight.intensity = .3; (t.glows || []).forEach(g => { if (g.material) g.material.opacity = Math.min(g.userData?.o ?? .08, .1); }); } }
   tale.addEventListener('click', e => { if (e.target.closest('.tl-x')) closeTale(); });
   document.addEventListener('pointerdown', e => { if (openK && !e.target.closest('#tale, #talelist, #tales-btn, .tale-chip, #vctrl, .h-ctrl') && e.target === world.renderer.domElement && !pickTale(e)) closeTale(); });
   // camera: turn to it from where we stand, with only a slight push in; the model sits left of centre, the tablet right
@@ -304,13 +327,18 @@ export async function createV10({ world, director, history, v7, statue, params }
       // battle volume: present, but ducked whenever a voice is speaking
       const speaking = narr.busy(), on = window.__v9 && window.__v9.on;
       for (const a of battles) { const goal = !on ? 0 : speaking ? .16 : .62; a.v += (goal - a.v) * Math.min(1, dt * 3); a.volume = Math.max(0, Math.min(1, a.v)); }
-      // tales: quiet, slow flicker; brighter on hover/open; a soft glint when History reaches their moment
+      // tales: furnace/tree/den stay dark silhouettes even when opened (v13b); wall may still glint. Firepits keep a tiny flicker.
       const cur = history.active ? Math.round(history.st.s) : -1, glintFor = TALE_AT[cur] || [];
-      for (const k in TALES) { const x = TALES[k]; const want = (hoverTale === k || openK === k) ? 1 : glintFor.includes(k) ? .6 : 0; x.h += (want - x.h) * Math.min(1, dt * 3);
-        const fl = .82 + .12 * Math.sin(t * 2.1 + k.length) + .06 * Math.sin(t * 5.3 + k.length * 2);
-        x.glows.forEach(gm => { const m = gm.material; const base = gm.userData.o ?? .5; if (gm.isSprite) m.opacity = base * fl * (1 + x.h * 1.6); else m.opacity = .45 * fl * (1 + x.h * .6); });
+      for (const k in TALES) {
+        const x = TALES[k], stayDark = k === 'furnace' || k === 'tree' || k === 'den';
+        const want = stayDark ? 0 : ((hoverTale === k || openK === k) ? 1 : glintFor.includes(k) ? .6 : 0);
+        x.h += (want - x.h) * Math.min(1, dt * 3);
+        const fl = stayDark ? (.9 + .05 * Math.sin(t * 1.7 + k.length)) : (.82 + .12 * Math.sin(t * 2.1 + k.length) + .06 * Math.sin(t * 5.3 + k.length * 2));
+        (x.glows || []).forEach(gm => { const m = gm.material; const base = stayDark ? Math.min(gm.userData.o ?? .08, .1) : (gm.userData.o ?? .5);
+          if (gm.isSprite) m.opacity = base * fl * (1 + x.h * 1.6); else m.opacity = .45 * fl * (1 + x.h * .6); });
         if (x.plate) x.plate.material.opacity = (.22 + .1 * Math.sin(t * .7)) * (1 + x.h * 1.8);
-        if (x.eyes) { const blink = (Math.sin(t * .9) > .97 || Math.sin(t * 1.3 + 2) > .985) ? .1 : 1; x.eyes.forEach(e => (e.material.opacity = .5 * blink * (1 + x.h))); }
+        if (x.eyes) { const blink = (Math.sin(t * .9) > .97 || Math.sin(t * 1.3 + 2) > .985) ? .1 : 1; x.eyes.forEach(e => (e.material.opacity = .35 * blink)); }
+        if (x.firepit) { const f = x.firepit.children.find(c => c.isSprite); if (f) f.material.opacity = .1 + .04 * Math.sin(t * 3 + k.length); }
       }
     },
   };

@@ -1,0 +1,14 @@
+import puppeteer from 'puppeteer-core';
+const W = ms => new Promise(r => setTimeout(r, ms));
+const b = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--window-size=1440,900'] });
+const p = await b.newPage(); await p.setViewport({ width: 1440, height: 900 }); const errs = [];
+p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); }); p.on('pageerror', e => errs.push('pageerror: ' + e.message));
+await p.goto('http://127.0.0.1:9011/?static&lod=high', { timeout: 180000 }); await p.evaluate(`localStorage.setItem('dan2-lang','en');localStorage.removeItem('dan2-statue')`);
+await p.goto('http://127.0.0.1:9011/?static&lod=high&state=exploded', { timeout: 180000 }); await p.waitForFunction('window.__ready === true', { timeout: 240000 }); await W(4000);
+await p.evaluate(`director.explode()`); await W(2500);
+await p.evaluate(`document.getElementById('statue-btn').click()`); await W(800);
+await p.evaluate(`document.querySelector('#statue-menu .sm-it[data-i="2"]').click()`);
+await p.waitForNavigation({ timeout: 180000 }); await p.waitForFunction('window.__ready === true', { timeout: 240000 }); await W(6000);
+console.log('after swap: statue=', await p.evaluate(`localStorage.getItem('dan2-statue')`), 'state=', await p.evaluate(`director.state`));
+await p.screenshot({ path: 'shots/v11d-swapped-exploded.png' }); console.log(errs.length ? errs.join(' | ') : 'clean');
+await p.evaluate(`localStorage.removeItem('dan2-statue')`); await b.close();

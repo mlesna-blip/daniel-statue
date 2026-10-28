@@ -9,7 +9,7 @@ const NODE = { head: 'head_gold', chest: 'chest_silver', belly: 'belly_bronze', 
 const COLOR_NEW = { head: 0xffffff, chest: 0xffffff, belly: 0xffffff, legs: 0xffffff, feet: 0xffffff }; // v10: metals are graded into the texture
 const COLOR_CLASSIC = { head: 0xffffff, chest: 0xeef3ff, belly: 0xd9c6b2, legs: 0xe4e8ee, feet: 0xffffff }; // v9 tints
 // v11: statue switcher. 'new' = v10 statue (default), 'classic' = the original v9 statue (unlockable), 'v11d' = the v11d design (open), 'v11f' = the v11f lamassu design (open)
-export const ASSET_V = '20261027c';
+export const ASSET_V = '20261027v13b';
 const asset = (p) => p + (p.includes('?') ? '&' : '?') + 'v=' + ASSET_V;
 export const STATUES = { new: { hd: 'models/statue_hd.glb', lod: 'models/statue_lod.glb', color: COLOR_NEW, fx: true }, classic: { hd: 'models/statue_classic_hd.glb', lod: 'models/statue_classic_lod.glb', color: COLOR_CLASSIC, fx: false },
   // v11d: Hunyuan 'v11d-A' design (griffin kilt), processed in /workspace/gt/v11d (same 5 nodes, 0..1 height -> 112 units; feet/legs/belly cuts on the v10 heights, belly/chest on the kilt's top edge; capped)
@@ -60,7 +60,7 @@ const CAPCOL = { head: [0xe0a83c, 0xe0a83c], chest: [0xc9d0da, 0xc9d0da], belly:
 function capMaterial(id, envMap) {
   const [c1, c2] = CAPCOL[id];
   const mat = new THREE.MeshStandardMaterial({ color: c1, metalness: id === 'feet' ? .7 : id === 'legs' ? .8 : 1, roughness: .42, envMap, envMapIntensity: id === 'legs' || id === 'feet' ? 1.3 : 2.2, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
-  mat.userData.capU = { uC2: { value: new THREE.Color(c2) }, uMix: { value: id === 'feet' ? 1 : 0 }, uGlow: { value: new THREE.Color({ head: 0xffb84a, chest: 0xc8d0dc, belly: 0xd08040, legs: 0x9a9088, feet: 0xa87050 }[id]).multiplyScalar(.16) } };
+  mat.userData.capU = { uC2: { value: new THREE.Color(c2) }, uMix: { value: id === 'feet' ? 1 : 0 }, uGlow: { value: new THREE.Color({ head: 0xffb84a, chest: 0xc8d0dc, belly: 0xd08040, legs: 0x9a9088, feet: 0xa87050 }[id]).multiplyScalar(.04) } };
   return mat;
 }
 function capShader(mat) {
@@ -174,12 +174,12 @@ export async function loadStatue(envMap, mats, onProgress) {
       const isCap = /_cap$/.test(o.name) || (o.parent && /_cap$/.test(o.parent.name));
       if (isCap && q.has('nocaps')) return;
       const sp = isCap ? splitCaps(o.geometry, o.matrixWorld, meta.id, nMid) : (q.has('nocaps') || hasCap) ? { body: o.geometry, caps: [] } : splitCaps(o.geometry, o.matrixWorld, meta.id);
-      if (isCap) { sp.caps.forEach(c => { const cm = capMaterial(meta.id, envMap); softSpot(cm); capShader(cm); const k = new THREE.Mesh(c.geo, cm); k.scale.setScalar(s); k.position.y = -box.min.y * s; k.receiveShadow = true; k.name = 'cap_' + c.side; pivot.add(k); g.userData.mats.add(cm); g.userData.caps = (g.userData.caps || 0) + c.n; }); return; }
+      if (isCap) { sp.caps.forEach(c => { const cm = capMaterial(meta.id, envMap); cm.color && cm.color.multiplyScalar(.35); cm.metalness = 0; cm.roughness = 1; cm.envMapIntensity = 0; softSpot(cm); capShader(cm); const k = new THREE.Mesh(c.geo, cm); k.scale.setScalar(s); k.position.y = -box.min.y * s; k.receiveShadow = true; k.name = 'cap_' + c.side; pivot.add(k); g.userData.mats.add(cm); g.userData.caps = (g.userData.caps || 0) + c.n; }); return; }
       const m = new THREE.Mesh(sp.body, o.material.clone());
       m.applyMatrix4(o.matrixWorld); m.position.multiplyScalar(s); m.scale.multiplyScalar(s);
       m.position.y -= box.min.y * s;
       // cap geometry is already in GLB world space -> same uniform scale + offset as the body
-      sp.caps.forEach(c => { const cm = capMaterial(meta.id, envMap); softSpot(cm); capShader(cm); const k = new THREE.Mesh(c.geo, cm); k.scale.setScalar(s); k.position.y = -box.min.y * s; k.receiveShadow = true; k.castShadow = false; k.name = 'cap_' + c.side; pivot.add(k); g.userData.mats.add(cm); g.userData.caps = (g.userData.caps || 0) + c.n; });
+      sp.caps.forEach(c => { const cm = capMaterial(meta.id, envMap); cm.color && cm.color.multiplyScalar(.35); cm.metalness = 0; cm.roughness = 1; cm.envMapIntensity = 0; softSpot(cm); capShader(cm); const k = new THREE.Mesh(c.geo, cm); k.scale.setScalar(s); k.position.y = -box.min.y * s; k.receiveShadow = true; k.castShadow = false; k.name = 'cap_' + c.side; pivot.add(k); g.userData.mats.add(cm); g.userData.caps = (g.userData.caps || 0) + c.n; });
       const mat = m.material; mat.envMap = envMap; mat.envMapIntensity = 1.35; mat.side = THREE.FrontSide; mat.color = new THREE.Color(COLOR[meta.id]);
       mat.emissive = new THREE.Color(TINT[meta.id]); mat.emissiveMap = mat.map; mat.emissiveIntensity = 0;
       softSpot(mat, !S.fx ? {} : meta.id === 'chest' ? { hot: 1.25, cool: .45 } : meta.id === 'head' ? { hot: 2.2 } : {}); m.castShadow = m.receiveShadow = true; pivot.add(m); g.userData.mats.add(mat);
@@ -203,4 +203,20 @@ export async function loadStatue(envMap, mats, onProgress) {
       const mat = m.material; mat.envMap = envMap; mat.envMapIntensity = 1.0; mat.side = THREE.FrontSide; softSpot(mat, { hot: 1.05, cool: .3 }); m.castShadow = m.receiveShadow = true; m.userData.noPick = true; backer.add(m); mats.add(mat); });
     backer.userData = { mats, noPick: true }; root.add(backer); }
   return { root, sections, lite, id: sid, backer };
+}
+
+export function setHistoryCaps(statue, hide) {
+  if (!statue || !statue.root) return;
+  statue.root.traverse(o => {
+    if (!o.isMesh || !/^cap_/.test(o.name || '')) return;
+    if (hide) { o.visible = false; }
+    else {
+      o.visible = true;
+      const m = o.material; if (!m) return;
+      if (m.userData && m.userData.capU && m.userData.capU.uGlow) m.userData.capU.uGlow.value.multiplyScalar(0);
+      if ('opacity' in m) { m.transparent = true; m.opacity = .35; }
+      if (m.color) m.color.setHex(0x1a120c);
+      m.needsUpdate = true;
+    }
+  });
 }

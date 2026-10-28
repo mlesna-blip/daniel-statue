@@ -2,11 +2,11 @@
 import { gsap } from 'gsap';
 const T = s => (window.__tr ? window.__tr(s) : s);
 const SEC = {
-  head: ['Daniel 2:32', '“This image’s head was of fine gold.”', 'Babylon — “Thou art this head of gold.”'],
-  chest: ['Daniel 2:32', '“…his breast and his arms of silver.”', 'Medo-Persia — a second kingdom, inferior to the first.'],
-  belly: ['Daniel 2:32', '“…his belly and his thighs of brass.”', 'Greece — a third kingdom that bears rule over all the earth.'],
-  legs: ['Daniel 2:33', '“His legs of iron.”', 'Rome — strong as iron, breaking all in pieces.'],
-  feet: ['Daniel 2:33', '“His feet part of iron and part of clay.”', 'A divided kingdom — partly strong, partly broken.'],
+  head: ['Daniel 2:32, 38', '“This image’s head was of fine gold.”', 'Babylon — “Thou art this head of gold.” Nebuchadnezzar’s empire, the first and richest.'],
+  chest: ['Daniel 2:32, 39', '“…his breast and his arms of silver.”', 'Medo-Persia — “another kingdom inferior to thee,” two arms for two peoples.'],
+  belly: ['Daniel 2:32, 39', '“…his belly and his thighs of brass.”', 'Greece — a third kingdom of brass “which shall bear rule over all the earth.”'],
+  legs: ['Daniel 2:33, 40', '“His legs of iron.”', 'Rome — “strong as iron,” it breaks and subdues all things.'],
+  feet: ['Daniel 2:33, 41–43', '“His feet part of iron and part of clay.”', 'A divided kingdom — “they shall not cleave one to another,” partly strong, partly broken.'],
 };
 const KING = [ // [event index, kingdom, key line]
   [0, 'Babylon', '605 BC — Nebuchadnezzar wins at Carchemish and rules the known world.'],
@@ -22,11 +22,45 @@ export function createPresenter({ director, history, statue, v7 }) {
   for (const [i, name, line] of KING) { const e = events[i]; const m = /^(.*?)\s+—\s+(.*)$/.exec(e.verse || ''); steps.push({ k: 'ev' + i, ev: i, title: name, ref: m ? m[1] : '', verse: m ? m[2] : (e.verse || ''), line }); }
   steps.push({ k: 'stone', stone: true, ref: 'Daniel 2:34–35', verse: '“…a stone was cut out without hands, which smote the image upon his feet… and became a great mountain, and filled the whole earth.”', line: 'A kingdom that shall never be destroyed.', title: 'The Stone' });
 
+  const EXTRA = {
+    assembled: 'Daniel stands before the king and declares both the dream and its meaning — God revealing what shall be hereafter.',
+    head: '“The God of heaven hath given thee a kingdom, power, and strength, and glory.” (Dan 2:37)',
+    chest: 'Cyrus fulfills Isaiah’s naming of him long before; the silver kingdom takes the gold.',
+    belly: 'Alexander’s rush matches the brass that “bears rule over all the earth,” then his empire splits.',
+    legs: 'Iron Rome crushes; yet the legs already hint at an east–west parting.',
+    feet: 'Iron and clay mixed — strong and brittle together. “They shall mingle themselves with the seed of men.”',
+    stone: '“A stone… cut out without hands” smites the image; the God of heaven sets up a kingdom that shall never be destroyed. (Dan 2:34, 44)',
+  };
+  steps.forEach(st => {
+    if (st.sec && EXTRA[st.sec]) st.extra = EXTRA[st.sec];
+    else if (st.stone) st.extra = EXTRA.stone;
+    else if (st.k === 'assembled') st.extra = EXTRA.assembled;
+    if (st.ev !== undefined && events[st.ev]) st.year = String(events[st.ev].year || '');
+    if (st.sec === 'head') st.year = st.year || '605 – 539 BC';
+    if (st.sec === 'chest') st.year = st.year || '539 – 331 BC';
+    if (st.sec === 'belly') st.year = st.year || '331 – 168 BC';
+    if (st.sec === 'legs') st.year = st.year || '168 BC – AD 476';
+    if (st.sec === 'feet') st.year = st.year || 'AD 476 –';
+  });
+
   const el = document.createElement('div'); el.id = 'presenter';
-  el.innerHTML = `<div class="pr-black"></div><div class="pr-text clayf"><div class="pr-ref"></div><div class="pr-title"></div><div class="pr-verse"></div><div class="pr-line"></div></div>
-    <button class="pr-prev" title="Previous (←)" aria-label="Previous">‹</button><button class="pr-next" title="Next (→)" aria-label="Next">›</button>
-    <div class="pr-hint">← → or click</div>
-    <div class="pr-bar"><span class="pr-n"></span><button class="pr-narr" title="Narration (N)"></button><button class="pr-x" title="Exit (Esc)">Esc · Exit</button></div>`;
+  el.innerHTML = `<div class="pr-black"></div>
+    <div class="pr-years" aria-hidden="true"></div>
+    <div class="pr-progress"><i></i></div>
+    <div class="pr-stage">
+      <button class="pr-prev" type="button" aria-label="Previous">‹</button>
+      <div class="pr-text">
+        <div class="pr-ref"></div>
+        <div class="pr-title"></div>
+        <div class="pr-verse"></div>
+        <div class="pr-line"></div>
+        <div class="pr-extra"></div>
+        <div class="pr-card" hidden></div>
+      </div>
+      <button class="pr-next" type="button" aria-label="Next">›</button>
+    </div>
+    <div class="pr-bar"><span class="pr-n"></span><button class="pr-narr" title="Narration (N)"></button><button class="pr-x" title="Exit (Esc)">Esc · Exit</button></div>
+    <div class="pr-hint">← → to step · Esc to exit</div>`;
   document.body.appendChild(el);
   const btn = document.createElement('button'); btn.id = 'presenter-btn'; btn.className = 'clayc'; btn.title = 'Presenter mode (P)'; btn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/></svg>`;
   document.body.appendChild(btn);
@@ -50,6 +84,17 @@ export function createPresenter({ director, history, statue, v7 }) {
     }
     const t = q('.pr-text'); t.classList.remove('in'); void t.offsetWidth;
     q('.pr-ref').textContent = T(s.ref); q('.pr-title').textContent = T(s.title); q('.pr-verse').textContent = T(s.verse); q('.pr-line').textContent = T(s.line);
+    const extra = q('.pr-extra'); const card = q('.pr-card');
+    if (s.extra) { extra.textContent = T(s.extra); extra.hidden = false; } else { extra.textContent = ''; extra.hidden = true; }
+    if (s.ev !== undefined && events[s.ev]) {
+      const ev = events[s.ev]; card.hidden = false;
+      card.innerHTML = `<div class="pr-cy">${ev.year || ''}</div><div class="pr-ct">${T(ev.title || ev.name || '')}</div><div class="pr-cb">${T((ev.blurb || ev.body || ev.text || '').toString().slice(0, 220))}</div>`;
+    } else { card.hidden = true; card.innerHTML = ''; }
+    const years = q('.pr-years');
+    if (s.year) { years.textContent = s.year; years.classList.add('on'); } else { years.textContent = ''; years.classList.remove('on'); }
+    const pct = steps.length <= 1 ? 1 : i / (steps.length - 1);
+    q('.pr-progress i').style.width = (pct * 100).toFixed(1) + '%';
+    q('.pr-prev').disabled = i <= 0; q('.pr-next').disabled = i >= steps.length - 1;
     t.classList.add('in'); q('.pr-n').textContent = `${i + 1} / ${steps.length}`;
   }
   function open() { if (on) return; on = true; window.__presenter = true; prevChoice = narr ? narr.choice : null; document.body.classList.add('presenting'); el.classList.add('on'); setNarr(); go(0); }
@@ -57,15 +102,15 @@ export function createPresenter({ director, history, statue, v7 }) {
     if (narr && prevChoice && narr.choice !== prevChoice) narr.set(prevChoice, true); if (history.active) history.exit(); if (director.state === 'stone') director.reset(); else if (director.focused) director.unfocus(); }
   btn.addEventListener('click', () => (on ? close() : open()));
   q('.pr-x').addEventListener('click', close);
-  q('.pr-prev').addEventListener('click', () => { el.classList.remove('black'); go(i - 1); });
-  q('.pr-next').addEventListener('click', () => { el.classList.remove('black'); go(i + 1); });
+  q('.pr-prev').addEventListener('click', () => { if (i <= 0) return; el.classList.remove('black'); go(i - 1); });
+  q('.pr-next').addEventListener('click', () => { if (i >= steps.length - 1) return; el.classList.remove('black'); go(i + 1); });
   q('.pr-narr').addEventListener('click', () => { auto = !auto; try { localStorage.setItem('dan2-pres-narr', auto ? 'auto' : 'off'); } catch (e) { } setNarr(); if (auto) speakStatic(steps[i]); });
   addEventListener('keydown', e => {
     if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement && document.activeElement.tagName)) return;
     if (!on) { if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); open(); } return; }
     const k = e.key; let used = true;
-    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter') { el.classList.remove('black'); go(i + 1); }
-    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace') { el.classList.remove('black'); go(i - 1); }
+    if (k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ' || k === 'Enter') { if (i >= steps.length - 1) return; el.classList.remove('black'); go(i + 1); }
+    else if (k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp' || k === 'Backspace') { if (i <= 0) return; el.classList.remove('black'); go(i - 1); }
     else if (k === 'Home') go(0); else if (k === 'End') go(steps.length - 1);
     else if (k === 'b' || k === 'B' || k === '.') el.classList.toggle('black');
     else if (k === 'n' || k === 'N') q('.pr-narr').click();

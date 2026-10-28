@@ -732,7 +732,7 @@ body.presenting #coGlow, body.presenting #btGlow, body.presenting #ltc, body.pre
 .qz-pick-l { font-family: 'Cormorant Garamond', serif; font-size: 15px; color: var(--dim, #a99577); margin: 0 0 4px; text-align: center; }
 .qz-lv { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 14px 16px !important; text-align: left; width: 100%; }
 .qz-lv b { font-family: Cinzel, serif; font-size: 15px; letter-spacing: .12em; color: #22130a; }
-.qz-lv span { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: #4a3420; }
+.qz-lv span { font-family: 'Cormorant Garamond', serif; font-size: 16px; font-weight: 700; color: #3a2414; opacity: .9; }
 /* 9 mobile: callout lines off, labels column; no assembled/exploded timeline; history timeline centered; event as sheet button */
 @media (max-width: 600px), (max-height: 450px) and (orientation: landscape) {
   .co-line, .co-dot, .co-ring { display: none !important; }
@@ -758,3 +758,162 @@ body.presenting #coGlow, body.presenting #btGlow, body.presenting #ltc, body.pre
 @media (min-width: 601px) and (min-height: 451px) { #ev-sheet-btn, #ev-strip, #hist .ev-strip { display: none !important; } }
 #qz .qz-play[hidden], .qz-play[hidden], .qz-pick[hidden] { display: none !important; }
 .qz-pick { padding-top: 12px; }
+
+
+/* ===== v13b ===== */
+#quiz { z-index: 50 !important; }
+#quiz .qz-tab, #quiz .qz-pick, #quiz .qz-lv { pointer-events: auto !important; position: relative; z-index: 2; }
+#quiz .qz-lv {
+  clip-path: none !important;
+  border-radius: 10px 8px 11px 7px !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(232,194,122,.25);
+}
+#quiz .qz-lv b { color: #22130a !important; font-size: 16px; letter-spacing: .1em; }
+#quiz .qz-lv span, .qz-lv span {
+  color: #3a2414 !important;
+  opacity: .9 !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.3;
+  text-shadow: none !important;
+  filter: none !important;
+}
+#quiz .qz-pick-l { color: #cbb892; }
+
+/* Presenter: arrows beside bottom container; progress; years; cards */
+#presenter .pr-stage {
+  position: absolute; left: 50%; bottom: 56px; transform: translateX(-50%);
+  width: min(1100px, 94vw); display: flex; align-items: stretch; gap: 10px;
+  pointer-events: none;
+}
+#presenter .pr-text {
+  position: relative !important; left: auto !important; bottom: auto !important; transform: none !important;
+  flex: 1; width: auto !important; max-width: none; pointer-events: none;
+  padding: 22px 28px 24px !important;
+  background: linear-gradient(180deg, rgba(18,12,8,.55), rgba(10,7,5,.72));
+  border: 1px solid rgba(232,194,122,.22); border-radius: 8px;
+  backdrop-filter: blur(8px);
+}
+#presenter .pr-prev, #presenter .pr-next {
+  position: static !important; top: auto !important; transform: none !important;
+  align-self: center; flex: 0 0 48px; width: 48px !important; height: 72px !important;
+  pointer-events: auto; border: 0; cursor: pointer;
+  font-family: Cinzel, serif; font-size: 36px; line-height: 1; color: #e8c27a;
+  background: rgba(20,12,7,.55); border-radius: 8px;
+}
+#presenter .pr-prev:disabled, #presenter .pr-next:disabled {
+  opacity: .22; cursor: default; pointer-events: none;
+}
+#presenter .pr-progress {
+  position: absolute; left: 50%; top: 18px; transform: translateX(-50%);
+  width: min(420px, 50vw); height: 3px; border-radius: 2px;
+  background: rgba(232,194,122,.15); overflow: hidden; pointer-events: none;
+}
+#presenter .pr-progress i {
+  display: block; height: 100%; width: 0; background: linear-gradient(90deg, #a67c3a, #e8c27a);
+  box-shadow: 0 0 8px rgba(232,194,122,.5); transition: width .45s ease;
+}
+#presenter .pr-years {
+  position: absolute; left: 50%; top: 36px; transform: translateX(-50%);
+  font-family: Cinzel, serif; font-size: 28px; letter-spacing: .2em;
+  color: rgba(243,230,204,.55); text-shadow: 0 2px 18px #000; pointer-events: none;
+  opacity: 0; transition: opacity .5s;
+}
+#presenter .pr-years.on { opacity: 1; }
+#presenter .pr-extra {
+  margin-top: 12px; font-family: 'Cormorant Garamond', serif; font-size: 18px;
+  line-height: 1.4; color: rgba(232,194,122,.85);
+}
+#presenter .pr-card {
+  margin-top: 14px; text-align: left; padding: 12px 14px;
+  background: rgba(0,0,0,.28); border: 1px solid rgba(232,194,122,.2); border-radius: 6px;
+}
+#presenter .pr-cy { font-family: Cinzel, serif; font-size: 11px; letter-spacing: .2em; color: #e8c27a; }
+#presenter .pr-ct { font-family: Cinzel, serif; font-size: 16px; color: #f3e6cc; margin: 4px 0; }
+#presenter .pr-cb { font-family: 'Cormorant Garamond', serif; font-size: 15px; line-height: 1.35; color: rgba(234,217,184,.88); }
+#presenter .pr-hint { bottom: 14px; }
+@media (max-width: 700px) {
+  #presenter .pr-stage { bottom: 12px; width: calc(100vw - 12px); gap: 0; flex-wrap: wrap; justify-content: center; }
+  #presenter .pr-text { order: 1; width: 100% !important; padding: 12px 14px !important; }
+  #presenter .pr-prev, #presenter .pr-next {
+    order: 0; height: 40px !important; width: 44px !important; font-size: 28px; margin: 0 6px 6px;
+  }
+  #presenter .pr-years { font-size: 18px; top: 48px; }
+  #presenter .pr-extra { font-size: 14px; } #presenter .pr-card { display: none; }
+  #presenter .pr-bar { top: 8px; right: 8px; }
+  #presenter .pr-x { background: rgba(20,12,7,.75) !important; border-color: #e8c27a !important; color: #f3cf8a !important; }
+}
+
+/* Icons-only tools stack (desktop + mobile) */
+#tools.v10 .clay-btn { min-width: 0 !important; width: 44px !important; height: 40px !important; padding: 0 !important; justify-content: center !important; }
+#tools.v10 .clay-btn b, #tools.v10 .clay-btn span { display: none !important; }
+#tools.v10 { gap: 8px; }
+
+/* History caps/seams cheap fix handled in JS; event card look */
+#hist .card {
+  background: linear-gradient(180deg, rgba(28,19,12,.9), rgba(12,9,7,.88)) !important;
+  border: 1px solid rgba(232,194,122,.28) !important;
+  color: #e9dcc4;
+}
+#hist .card .c-title { color: #f3e6cc; }
+#hist .card .c-body { color: rgba(234,217,184,.9); }
+body:not(.history) #hist .card, body:not(.history) .card.sheet-on { display: none !important; }
+/* Assembled/exploded: hide stray white event card */
+body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: none !important; }
+#ui .panel.card, #ui .card { /* noop */ }
+
+/* Event card close affordance */
+#hist .card { position: relative; }
+#hist .card .c-x {
+  position: absolute; right: 10px; top: 8px; z-index: 3;
+  font-family: Cinzel, serif; font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+  color: #a99577; background: rgba(0,0,0,.35); border: 1px solid rgba(232,194,122,.25);
+  padding: 5px 10px; cursor: pointer; pointer-events: auto; border-radius: 4px;
+}
+#hist .card .c-x:hover { color: #f3cf8a; border-color: #e8c27a; }
+
+/* Timeline diamonds centered on the line */
+#hist .h-timeline .mark {
+  display: flex; flex-direction: column; align-items: center;
+}
+#hist .h-timeline .mark i, #hist .h-timeline .mark .dia, #hist .h-timeline .diamond {
+  transform: translate(-50%, -50%);
+}
+#hist .h-timeline .bands { top: 50%; transform: translateY(-50%); }
+/* marks sit on the center line */
+#hist .h-timeline .mark {
+  top: 50% !important; margin-top: 0 !important;
+}
+#hist .h-timeline .mark::before,
+#hist .h-timeline .band::before {
+  /* keep */
+}
+
+/* Mobile: bottom darkening, year up, esc visible, number popups stacked */
+@media (max-width: 600px) {
+  body::after {
+    content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: 42vh;
+    background: linear-gradient(180deg, transparent, rgba(4,2,1,.72) 55%, rgba(0,0,0,.88));
+    pointer-events: none; z-index: 4;
+  }
+  #hist .h-year { bottom: 150px !important; z-index: 6; }
+  #hist .h-timeline { bottom: 62px !important; z-index: 6; }
+  #presenter .pr-x, .modes .ghost, #ui .hint, #quiz .qz-x, #tale .tl-x {
+    opacity: 1 !important; visibility: visible !important;
+  }
+  /* floating number / callout: number on top, text below */
+  #callouts .co-lbl {
+    display: flex !important; flex-direction: column !important; align-items: flex-end !important;
+    gap: 2px !important;
+  }
+  #callouts .co-name { order: 0; font-size: 22px !important; }
+  #callouts .co-date { order: 1; font-size: 12px !important; }
+  #callouts .co-icon { order: -1; margin-bottom: 2px; }
+  .cx-ill { flex-direction: column; }
+  .cx-num { display: block; margin: 0 auto 8px; }
+}
+
+/* Narrator dropdown visible in history */
+#hist .h-ctrl .dd-narr, #hist .dd.dd-narr, #hist .h-ctrl .dd { display: block !important; opacity: 1 !important; }
+#vctrl .dd-narr { display: block; }

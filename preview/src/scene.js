@@ -98,7 +98,7 @@ export function createWorld(container) {
   const camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, .5, 6000);
   camera.position.set(0, 4, 80);
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 60, 0); controls.enableDamping = true; controls.dampingFactor = .06;
+  controls.target.set(0, 60, 0); controls.enableDamping = true; controls.dampingFactor = .085; controls.rotateSpeed = .68; controls.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
   controls.maxPolarAngle = Math.PI * .7; controls.minPolarAngle = .05; controls.minDistance = 25; controls.maxDistance = 650; controls.update();
 
   const skyMat = new THREE.ShaderMaterial({ vertexShader: skyVert, fragmentShader: skyFrag, side: THREE.BackSide, depthWrite: false, fog: false, uniforms: { uTime: { value: 0 }, uSun: { value: SUN_DIR }, uStorm: { value: 1 }, uGlowDir: { value: BABYLON_DIR }, uGlow: { value: 1 } } });
@@ -220,12 +220,12 @@ export function createWorld(container) {
     const p = new THREE.Points(g, new THREE.PointsMaterial({ size, map: radialSprite(col, 32), transparent: true, opacity: op, depthWrite: false, blending: blend, color: 0xffffff })); scene.add(p); return p;
   };
   const embers = mk('rgba(255,190,120,1)', THREE.AdditiveBlending, .5, .3, 150);
-  const ash = mk('rgba(6,4,3,1)', THREE.NormalBlending, .8, .8, 230);
+  const ash = mk('rgba(18,12,8,1)', THREE.NormalBlending, 1.1, .55, 280);
 
   // post
   const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
   const bloom = new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), .3, .6, .9); composer.addPass(bloom); composer.addPass(new OutputPass());
-  addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight); });
+  addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); composer.setSize(innerWidth, innerHeight); controls.update(); });
 
   const world = { renderer, scene, camera, controls, composer, bloom, envMap, impact, skyMat, rays, hemi, key, topKey, rim, fires, brazierLights, torches, PLAT_TOP, plat, ground: null, groundAt: null, mood: { level: 1 } };
   world.update = function (t, dt) {

@@ -146,8 +146,8 @@ export class Director {
       this.shards.update(fx.shatter);
       this.list.forEach(sec => { sec.visible = !(fx.shatter > this.shards.delays[sec.name] + .03); });
       if (this.statue.backer) this.statue.backer.visible = !(fx.shatter > this.shards.delays.legs + .03);
-      const m = fx.mountain; this.mountain.visible = m > 0; this.mountain.scale.set(330 * m + .001, 420 * m + .001, 330 * m + .001); this.mountain.position.set(0, -2, 13);
-      this.mountain.scale.set(330 * m + .001, 420 * THREE.MathUtils.smoothstep(m, 0, .85) + .001, 330 * m + .001);
+      const m = fx.mountain; this.mountain.visible = m > 0; this.mountain.scale.set(460 * m + .001, 260 * m + .001, 460 * m + .001); this.mountain.position.set(0, -2, 13);
+      this.mountain.scale.set(460 * m + .001, 260 * THREE.MathUtils.smoothstep(m, 0, .85) + .001, 460 * m + .001);
       this.stone.visible = m < .05; this.stone.scale.setScalar(1 + m * 10); this.debris && this.debris.update(fx.shatter);
       this.world.impact.intensity = fx.flash * 900; this.world.bloom.strength = .55 + fx.flash * 1.6 + m * .2;
       this.ui.setFlash(fx.flash);
