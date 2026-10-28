@@ -13,7 +13,7 @@ const ICON = {
   lang: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.4 2.6 14.6 0 17M12 3.5c-2.6 2.4-2.6 14.6 0 17"/></svg>',
   caret: '<svg class="cr" viewBox="0 0 10 10"><path d="M2 6.5 5 3.5 8 6.5"/></svg>',
   quiz: '<svg viewBox="0 0 24 24" class="qi"><path d="M9 9.2a3 3 0 1 1 4.2 2.8c-.8.4-1.2 1-1.2 1.9v.6"/><circle cx="12" cy="17.6" r=".9"/></svg>',
-  tales: '<svg viewBox="0 0 24 24" class="qi"><path d="M5 4h10l4 4v12H5z"/><path d="M8 10h8M8 13.5h8M8 17h5"/></svg>',
+  tales: '<svg viewBox="0 0 24 24" class="qi" aria-hidden="true"><path d="M12 3.2c2.2 3.1 5.6 5.4 5.6 9.2A5.6 5.6 0 0 1 12 18.8 5.6 5.6 0 0 1 6.4 12.4C6.4 8.6 9.8 6.3 12 3.2z"/><path d="M12 9.2c1.1 1.5 2.6 2.6 2.6 4.4A2.6 2.6 0 0 1 12 16.2a2.6 2.6 0 0 1-2.6-2.6c0-1.8 1.5-2.9 2.6-4.4z"/></svg>',
 };
 const TALE_POS = { furnace: [-330, 0, -480], den: [-520, 0, -200], tree: [430, 0, -660] }; // v13: den far from the tree (west of Babylon) // v12: Hunyuan furnace/tree come back closer; low-poly den stays far // v11 fb: pushed far back so the low-poly only reads as silhouettes
 const TALE_AT = { 1: ['furnace', 'tree'], 2: ['wall', 'den'] };
@@ -150,7 +150,7 @@ export async function createV10({ world, director, history, v7, statue, params }
       : `<b>${T('Keep studying')}</b> ${esc(T('Score 6 of 8 to pass.'))}`;
     qz.querySelector('.qz-next').disabled = false; qz.querySelector('.qz-next').textContent = T('Choose level');
   }
-  qBtn.onclick = () => openPick(); renderBest();
+  qBtn.onclick = e => { e.stopPropagation(); if (qz.classList.contains('on')) qz.classList.remove('on'); else openPick(); }; renderBest();
 
   // ---------------------------------------------------------------- Tales of Daniel: low-poly places near the wall
   const TK = 'dan2-tales'; let seen = new Set(); try { seen = new Set(JSON.parse(localStorage.getItem(TK) || '[]')); } catch (e) { }
@@ -158,7 +158,7 @@ export async function createV10({ world, director, history, v7, statue, params }
   const fogless = (c, o = {}) => new THREE.MeshLambertMaterial({ color: c, ...o });
   const glowTex = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'); const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,200,130,1)'); g.addColorStop(.35, 'rgba(255,130,50,.45)'); g.addColorStop(1, 'rgba(120,40,0,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
   const glow = (s, o = .5) => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: o, fog: false })); m.scale.setScalar(s); m.userData.o = o; return m; };
-  const brick = fogless(0x2a1d15), dark = fogless(0x120c09), stoneM = fogless(0x2c2621), bark = fogless(0x22170f, { flatShading: true }), leaf = fogless(0x1d2016, { flatShading: true }), barkLit = fogless(0x3a2818, { flatShading: true, emissive: 0x1c120a, fog: false }), leafLit = fogless(0x33402a, { flatShading: true, emissive: 0x2c3a18, fog: false }), bandM = new THREE.MeshStandardMaterial({ color: 0x6b5035, metalness: .8, roughness: .5, envMap: world.envMap, envMapIntensity: .5 });
+  const brick = fogless(0x1a1410), dark = fogless(0x120c09), stoneM = fogless(0x2c2621), bark = fogless(0x22170f, { flatShading: true }), leaf = fogless(0x1d2016, { flatShading: true }), barkLit = fogless(0x3a2818, { flatShading: true, emissive: 0x1c120a, fog: false }), leafLit = fogless(0x33402a, { flatShading: true, emissive: 0x2c3a18, fog: false }), bandM = new THREE.MeshStandardMaterial({ color: 0x6b5035, metalness: .8, roughness: .5, envMap: world.envMap, envMapIntensity: .5 });
   const TALES = {};
   function mk(k, g, focusY, glows) { g.position.set(...TALE_POS[k]); world.scene.add(g); g.traverse(o => { if (o.isMesh) { o.userData.tale = k; o.castShadow = false; o.receiveShadow = true; } }); TALES[k] = { g, focusY, glows, h: 0 }; }
   { // the furnace (Dan 3): stepped brick kiln with a domed top and a glowing mouth
@@ -166,12 +166,12 @@ export async function createV10({ world, director, history, v7, statue, params }
     const body = new THREE.Mesh(new THREE.CylinderGeometry(15, 17, 22, 9), brick); body.position.y = 16; g.add(body);
     const dome = new THREE.Mesh(new THREE.SphereGeometry(15, 9, 5, 0, Math.PI * 2, 0, Math.PI / 2), brick); dome.position.y = 27; g.add(dome);
     const ch = new THREE.Mesh(new THREE.CylinderGeometry(2.6, 3.2, 10, 6), brick); ch.position.set(4, 44, -3); g.add(ch);
-    const mouth = new THREE.Mesh(new THREE.PlaneGeometry(9, 11), new THREE.MeshBasicMaterial({ color: 0xff7a2a, transparent: true, opacity: .55, fog: false })); mouth.position.set(0, 10.5, 16.6); g.add(mouth); mouth.userData.flick = 1;
+    const mouth = new THREE.Mesh(new THREE.PlaneGeometry(9, 11), new THREE.MeshBasicMaterial({ color: 0xc45a22, transparent: true, opacity: .28, fog: false })); mouth.position.set(0, 10.5, 16.6); g.add(mouth); mouth.userData.flick = 1;
     const arch = new THREE.Mesh(new THREE.CircleGeometry(4.5, 10, 0, Math.PI), mouth.material); arch.position.set(0, 16, 16.6); g.add(arch);
     // v13b: four figures in the mouth — three men + a distinct 4th (taller, brighter outline)
     const figM = new THREE.MeshBasicMaterial({ color: 0x0a0604, transparent: true, opacity: .92, fog: false, depthWrite: false });
     const figGlow = new THREE.MeshBasicMaterial({ color: 0xffc27a, transparent: true, opacity: .55, fog: false, depthWrite: false, blending: THREE.AdditiveBlending });
-    const men = new THREE.Group(); men.position.set(0, 9.2, 16.2); men.userData.flick = true;
+    const men = new THREE.Group(); men.position.set(0, 9.2, 16.2); men.userData.keepFigs = true;
     [[-2.4, 0, 1], [0, 0, 0], [2.4, 0, 1]].forEach(([x, y, z], i) => {
       const body = new THREE.Mesh(new THREE.CapsuleGeometry(.55, 2.2, 3, 6), figM); body.position.set(x, 1.6, z); men.add(body);
       const head = new THREE.Mesh(new THREE.SphereGeometry(.42, 6, 5), figM); head.position.set(x, 3.2, z); men.add(head);
@@ -239,10 +239,23 @@ export async function createV10({ world, director, history, v7, statue, params }
           const mt = x.material; mt.envMapIntensity = .08; mt.emissive = new THREE.Color(o.emi); mt.emissiveMap = mt.map; mt.emissiveIntensity = Math.min(o.ei, .06); mt.color && mt.color.multiplyScalar(.35);
           mt.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <fog_fragment>', `#ifdef USE_FOG\n float fdK = fogDensity * ${o.fogK.toFixed(2)}; float fogFactor = 1.0 - exp( - fdK * fdK * vFogDepth * vFogDepth ); gl_FragColor.rgb = mix( gl_FragColor.rgb, mix( fogColor, vec3( .11, .06, .03 ), .7 ), fogFactor * .92 );\n#endif`); }; // thinner, warmer haze
           mt.customProgramCacheKey = () => 'talehq' + o.fogK; mt.needsUpdate = true; });
-        TALES[k].g.children.forEach(ch => { if (ch.isMesh && !ch.userData.flick) ch.visible = false; if (ch.userData.flick) ch.visible = false; });
+        TALES[k].g.children.forEach(ch => {
+          if (ch.userData && ch.userData.keepFigs) return; // keep our 3+1 figures
+          if (ch.isMesh && !ch.userData.flick) ch.visible = false;
+          if (ch.userData && ch.userData.flick) ch.visible = false;
+        });
         TALES[k].g.add(piv); TALES[k].hq = piv; TALES[k].focusY = k === 'tree' ? 40 : 22; TALES[k].center.y = TALES[k].focusY;
         if (k === 'tree') { const l = new THREE.PointLight(0xffc27a, .35, 220, 0); l.position.set(0, 50, 70); TALES[k].g.add(l); TALES[k].hqLight = l; }
-        if (k === 'furnace') { const l = new THREE.PointLight(0xff7a2a, .3, 120, 0); l.position.set(0, 14, 30); TALES[k].g.add(l); TALES[k].hqLight = l; }
+        if (k === 'furnace') {
+          // Dim the HQ glow so the kiln blends with the ground (less red/boxy)
+          m.traverse(x => { if (!x.isMesh || !x.material) return; const mt = x.material;
+            if (mt.emissive) mt.emissive.multiplyScalar(.35); mt.emissiveIntensity = Math.min(mt.emissiveIntensity || 0, .03);
+            if (mt.color) mt.color.multiplyScalar(.55); });
+          const l = new THREE.PointLight(0xff7a2a, .12, 90, 1.2); l.position.set(0, 10, 24); TALES[k].g.add(l); TALES[k].hqLight = l;
+          // Re-show 4 figures in front of the HQ mouth (HQ model only has 2)
+          const figs = TALES[k].g.children.find(c => c.userData && c.userData.keepFigs);
+          if (figs) { figs.visible = true; figs.traverse(o => { if (o.isMesh) o.visible = true; }); figs.position.z = Math.max(figs.position.z, 18); }
+        }
       }).catch(e => console.warn('tale hq', k, e));
     }
   }

@@ -1,6 +1,7 @@
 // v12: presenter mode. A curated sequence (statue → metals → kingdoms → stone) stepped by keys or a clicker.
 import { gsap } from 'gsap';
 const T = s => (window.__tr ? window.__tr(s) : s);
+function fmtYear(y) { if (y == null || y === '') return ''; const n = +y; if (!Number.isFinite(n)) return String(y); return n < 0 ? `${-n} BC` : n > 0 ? `AD ${n}` : 'AD 1'; }
 const SEC = {
   head: ['Daniel 2:32, 38', '“This image’s head was of fine gold.”', 'Babylon — “Thou art this head of gold.” Nebuchadnezzar’s empire, the first and richest.'],
   chest: ['Daniel 2:32, 39', '“…his breast and his arms of silver.”', 'Medo-Persia — “another kingdom inferior to thee,” two arms for two peoples.'],
@@ -65,11 +66,48 @@ export function createPresenter({ director, history, statue, v7 }) {
   const btn = document.createElement('button'); btn.id = 'presenter-btn'; btn.className = 'clayc'; btn.title = 'Presenter mode (P)'; btn.innerHTML = `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M12 16v4M8 20h8"/></svg>`;
   document.body.appendChild(btn);
   const q = s => el.querySelector(s);
-  let on = false, i = 0, auto = true, prevChoice = null;
+  let on = false, i = 0, auto = true, prevChoice = null, speakT = null, speakTok = 0;
+  function clearSpot() {
+    if (!statue || !statue.sections) return;
+    director.list.forEach(sec => gsap.to(sec.userData, { hl: 0, dim: 0, duration: .9, overwrite: 'auto' }));
+    try { const key = director.world && director.world.key; if (key) gsap.to(key, { angle: key.userData._baseA || key.angle, duration: 1.2 }); } catch (e) {}
+  }
+  function spotSection(id, instant) {
+    const sec = statue.sections[id]; if (!sec) return;
+    director.list.forEach(s => gsap.to(s.userData, { hl: s.name === id ? 1.55 : 0, dim: s.name === id ? 0 : 1, duration: instant ? 0 : 1.2, overwrite: 'auto' }));
+    // Ease camera toward the section without exploding it
+    try {
+      const home = sec.userData.home; const cy = home.y * (statue.root.scale.y || 1) + statue.root.position.y;
+      const cam = director.camera, ctrl = director.controls;
+      if (cam && ctrl) {
+        const goalT = { x: 0, y: cy * .55 + 8, z: 0 };
+        const dist = 110 + cy * .35;
+        const goalP = { x: cam.position.x * .15, y: cy * .55 + 18, z: dist };
+        gsap.to(ctrl.target, { x: goalT.x, y: goalT.y, z: goalT.z, duration: instant ? 0 : 1.4, ease: 'power2.inOut' });
+        gsap.to(cam.position, { x: goalP.x, y: goalP.y, z: goalP.z, duration: instant ? 0 : 1.4, ease: 'power2.inOut' });
+      }
+    } catch (e) {}
+  }
+  // Narration picker covers every slide (statue sections via bible views, events via current guide, stone via bible)
+  function speakSlide(s) {
+    if (!auto || !narr || !narr.on) return;
+    const NR = window.__NARR;
+    if (s.ev !== undefined) {
+      const g = narr.guide || 'bible';
+      const lines = NR && NR.guides && NR.guides[g];
+      const text = lines && lines[s.ev];
+      if (text) narr.speak(text, s.ev, g === 'bible' ? 'bible' : undefined);
+      else if (NR && NR.bible && NR.bible.events[s.ev]) narr.speak(NR.bible.events[s.ev].text, s.ev, 'bible');
+      return;
+    }
+    const key = s.stone ? 'stone' : s.sec || 'assembled';
+    const x = NR && NR.bible && NR.bible.views[key];
+    if (x) narr.speak(x.text, 'v-' + key, 'bible');
+  }
+
   try { auto = localStorage.getItem('dan2-pres-narr') !== 'off'; } catch (e) { }
   const setNarr = () => { q('.pr-narr').textContent = auto ? 'Narration · Auto' : 'Narration · Off'; q('.pr-narr').classList.toggle('on', auto); if (!narr) return;
     if (!auto) { if (narr.choice !== 'off') narr.set('off', true); } else if (narr.choice === 'off') narr.set(prevChoice && prevChoice !== 'off' ? prevChoice : (narr.guide || 'bible'), true); };
-  function speakStatic(s) { if (!auto || !narr || !narr.on) return; const NR = window.__NARR; const key = s.stone ? 'stone' : s.sec || 'assembled'; const x = NR && NR.bible && NR.bible.views[key]; if (x) narr.speak(x.text, 'v-' + key, 'bible'); }
   function go(n, instant) {
     i = Math.max(0, Math.min(steps.length - 1, n)); const s = steps[i];
     narr && narr.stop();
@@ -78,9 +116,19 @@ export function createPresenter({ director, history, statue, v7 }) {
       history.pause(); history.goTo(s.ev, instant);
     } else {
       if (history.active) history.exit();
-      if (s.stone) director.playStone(window.__presStoneT ?? null);
-      else { if (director.state === 'stone') director.reset(true); if (director.state === 'exploded') director.assemble(); if (s.sec) director.focus(statue.sections[s.sec], instant); else if (director.focused) director.unfocus(instant); else director.assemble(instant); }
-      gsap.delayedCall(instant ? 0 : 1.2, () => on && steps[i] === s && speakStatic(s));
+      if (s.stone) { director.playStone(window.__presStoneT ?? null); clearSpot(); }
+      else {
+        if (director.state === 'stone') director.reset(true);
+        if (director.state === 'exploded') director.assemble();
+        if (director.focused) director.unfocus(true);
+        if (director.state !== 'assembled' && director.state !== 'focus') director.assemble(instant);
+        // Presenter-only: move a spotlight section-to-section down the assembled statue (no slice-out)
+        if (s.sec) spotSection(s.sec, instant); else clearSpot();
+      }
+      // Speak once after camera settles; cancel any prior pending
+      clearTimeout(speakT); speakT = null;
+      const tok = ++speakTok; const hold = s;
+      speakT = setTimeout(() => { if (!on || steps[i] !== hold || speakTok !== tok) return; speakSlide(hold); }, instant ? 80 : 1400);
     }
     const t = q('.pr-text'); t.classList.remove('in'); void t.offsetWidth;
     q('.pr-ref').textContent = T(s.ref); q('.pr-title').textContent = T(s.title); q('.pr-verse').textContent = T(s.verse); q('.pr-line').textContent = T(s.line);
@@ -88,7 +136,7 @@ export function createPresenter({ director, history, statue, v7 }) {
     if (s.extra) { extra.textContent = T(s.extra); extra.hidden = false; } else { extra.textContent = ''; extra.hidden = true; }
     if (s.ev !== undefined && events[s.ev]) {
       const ev = events[s.ev]; card.hidden = false;
-      card.innerHTML = `<div class="pr-cy">${ev.year || ''}</div><div class="pr-ct">${T(ev.title || ev.name || '')}</div><div class="pr-cb">${T((ev.blurb || ev.body || ev.text || '').toString().slice(0, 220))}</div>`;
+      card.innerHTML = `<div class="pr-cy">${fmtYear(ev.year) || ev.date || ''}</div><div class="pr-ct">${T(ev.title || ev.name || '')}</div><div class="pr-cb">${T((ev.blurb || ev.body || ev.text || '').toString().slice(0, 220))}</div>`;
     } else { card.hidden = true; card.innerHTML = ''; }
     const years = q('.pr-years');
     if (s.year) { years.textContent = s.year; years.classList.add('on'); } else { years.textContent = ''; years.classList.remove('on'); }
@@ -98,13 +146,13 @@ export function createPresenter({ director, history, statue, v7 }) {
     t.classList.add('in'); q('.pr-n').textContent = `${i + 1} / ${steps.length}`;
   }
   function open() { if (on) return; on = true; window.__presenter = true; prevChoice = narr ? narr.choice : null; document.body.classList.add('presenting'); el.classList.add('on'); setNarr(); go(0); }
-  function close() { if (!on) return; on = false; window.__presenter = false; el.classList.remove('on', 'black'); document.body.classList.remove('presenting'); narr && narr.stop();
+  function close() { if (!on) return; on = false; window.__presenter = false; el.classList.remove('on', 'black'); document.body.classList.remove('presenting'); narr && narr.stop(); clearTimeout(speakT); clearSpot();
     if (narr && prevChoice && narr.choice !== prevChoice) narr.set(prevChoice, true); if (history.active) history.exit(); if (director.state === 'stone') director.reset(); else if (director.focused) director.unfocus(); }
   btn.addEventListener('click', () => (on ? close() : open()));
   q('.pr-x').addEventListener('click', close);
   q('.pr-prev').addEventListener('click', () => { if (i <= 0) return; el.classList.remove('black'); go(i - 1); });
   q('.pr-next').addEventListener('click', () => { if (i >= steps.length - 1) return; el.classList.remove('black'); go(i + 1); });
-  q('.pr-narr').addEventListener('click', () => { auto = !auto; try { localStorage.setItem('dan2-pres-narr', auto ? 'auto' : 'off'); } catch (e) { } setNarr(); if (auto) speakStatic(steps[i]); });
+  q('.pr-narr').addEventListener('click', () => { auto = !auto; try { localStorage.setItem('dan2-pres-narr', auto ? 'auto' : 'off'); } catch (e) { } setNarr(); if (auto) speakSlide(steps[i]); else narr && narr.stop(); });
   addEventListener('keydown', e => {
     if (/INPUT|TEXTAREA|SELECT/.test(document.activeElement && document.activeElement.tagName)) return;
     if (!on) { if ((e.key === 'p' || e.key === 'P') && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); open(); } return; }

@@ -834,11 +834,26 @@ body.presenting #coGlow, body.presenting #btGlow, body.presenting #ltc, body.pre
 #presenter .pr-cb { font-family: 'Cormorant Garamond', serif; font-size: 15px; line-height: 1.35; color: rgba(234,217,184,.88); }
 #presenter .pr-hint { bottom: 14px; }
 @media (max-width: 700px) {
-  #presenter .pr-stage { bottom: 12px; width: calc(100vw - 12px); gap: 0; flex-wrap: wrap; justify-content: center; }
-  #presenter .pr-text { order: 1; width: 100% !important; padding: 12px 14px !important; }
-  #presenter .pr-prev, #presenter .pr-next {
-    order: 0; height: 40px !important; width: 44px !important; font-size: 28px; margin: 0 6px 6px;
+  /* Text stays at bottom; arrows float at left/right edges, raised above the text card */
+  #presenter .pr-stage {
+    bottom: 12px; width: calc(100vw - 12px); gap: 0;
+    display: block !important; position: absolute;
+    left: 50%; transform: translateX(-50%);
+    pointer-events: none;
   }
+  #presenter .pr-text {
+    position: relative !important; width: 100% !important; padding: 12px 14px !important;
+    margin: 0; left: auto !important; bottom: auto !important; transform: none !important;
+  }
+  #presenter .pr-prev, #presenter .pr-next {
+    position: fixed !important; top: auto !important; bottom: calc(12px + min(42vh, 280px) + 10px) !important;
+    transform: none !important; margin: 0 !important;
+    height: 48px !important; width: 48px !important; font-size: 30px;
+    z-index: 45; pointer-events: auto; align-self: auto;
+    flex: none !important;
+  }
+  #presenter .pr-prev { left: 8px !important; right: auto !important; }
+  #presenter .pr-next { right: 8px !important; left: auto !important; }
   #presenter .pr-years { font-size: 18px; top: 48px; }
   #presenter .pr-extra { font-size: 14px; } #presenter .pr-card { display: none; }
   #presenter .pr-bar { top: 8px; right: 8px; }
@@ -893,9 +908,12 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
 /* Mobile: bottom darkening, year up, esc visible, number popups stacked */
 @media (max-width: 600px) {
   body::after {
-    content: ''; position: fixed; left: 0; right: 0; bottom: 0; height: 42vh;
+    content: none; display: none; /* v14: history-only gradient lives in the v14 block */
+  }
+  body.history::after {
+    content: ''; display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 42vh;
     background: linear-gradient(180deg, transparent, rgba(4,2,1,.72) 55%, rgba(0,0,0,.88));
-    pointer-events: none; z-index: 1; /* behind timeline/labels/controls (z≥5), above canvas */
+    pointer-events: none !important; z-index: 1;
   }
   #hist .h-year { bottom: 150px !important; z-index: 6; }
   #hist .h-timeline { bottom: 62px !important; z-index: 6; }
@@ -1043,3 +1061,182 @@ body:not(.history) #ev-sheet-btn, body:not(.history) #hist .ev-strip { display: 
   #ev-sheet-btn .qi { width: 17px; height: 17px; }
 }
 /* Desktop: Event stays hidden (existing rules); no visual regression */
+
+
+/* ===== v14 feedback ===== */
+/* 5: timeline diamonds centered on the track line (mobile + desktop) */
+#hist .h-timeline .mark {
+  position: absolute; top: 0; transform: translateX(-50%);
+  width: 18px; height: 36px; padding: 0 !important; border: 0 !important; background: none !important;
+  display: flex; align-items: center; justify-content: center;
+}
+#hist .h-timeline .mark .dot {
+  position: absolute; left: 50%; top: 16px; /* track is at top:16px height:2px → center at 17px */
+  width: 10px; height: 10px; margin: 0 !important;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: currentColor; border: 1px solid rgba(255,220,160,.55);
+  box-shadow: 0 0 8px currentColor;
+}
+#hist .h-timeline .mark.cur .dot {
+  transform: translate(-50%, -50%) rotate(45deg) scale(1.75) !important;
+}
+#hist .h-timeline .mark .lbl {
+  position: absolute; left: 50%; top: 26px; transform: translateX(-50%);
+  white-space: nowrap; pointer-events: none;
+}
+#hist .h-timeline .track { top: 16px; height: 2px; }
+#hist .h-timeline .bands { top: 10px; }
+
+/* 10: bottom gradient ONLY in History, and ONLY over the map (beneath timeline + text) */
+body::after {
+  content: none !important; display: none !important;
+}
+body.history::after {
+  content: '' !important; display: block !important;
+  position: fixed; left: 0; right: 0; bottom: 0;
+  height: min(42vh, 320px);
+  pointer-events: none; z-index: 1; /* beneath timeline (z6) and text */
+  background: linear-gradient(180deg, rgba(4,3,2,0) 0%, rgba(4,3,2,.55) 45%, rgba(4,3,2,.88) 100%);
+}
+body.presenting::after,
+body:not(.history)::after { content: none !important; display: none !important; }
+
+/* 12: Exploded mobile — icon + empire name + years only; no descriptions; clear of top-right icon stack */
+@media (max-width: 600px), (max-height: 450px) and (orientation: landscape) {
+  body:has(#ui[data-mode=exploded]) #callouts .co-desc,
+  body:has(#ui[data-mode=exploded]) .co-desc { display: none !important; }
+  body:has(#ui[data-mode=exploded]) #callouts .co-lbl {
+    max-width: 46vw !important; padding-right: 4px !important;
+  }
+  body:has(#ui[data-mode=exploded]) #callouts .co-name {
+    font-size: 13px !important; letter-spacing: .1em !important; white-space: nowrap;
+  }
+  body:has(#ui[data-mode=exploded]) #callouts .co-date {
+    font-size: 9px !important; letter-spacing: .14em !important;
+  }
+  body:has(#ui[data-mode=exploded]) #callouts .co-icon {
+    width: 36px !important; height: 28px !important;
+  }
+  /* keep callouts on the LEFT so they don't clash with top-right icon stack */
+  body:has(#ui[data-mode=exploded]) #callouts .co-g,
+  body:has(#ui[data-mode=exploded]) .co-g {
+    left: 8px !important; right: auto !important; align-items: flex-start !important;
+    bottom: 90px !important; top: auto !important;
+  }
+  body:has(#ui[data-mode=exploded]) #callouts .co-lbl { text-align: left !important; }
+
+  /* 13: after Exploded, top nav must stay clickable — raise z-index, ensure pointer-events */
+  #ui { z-index: 12 !important; }
+  #ui .modes { z-index: 13 !important; pointer-events: auto !important; position: relative; }
+  #ui .modes button { pointer-events: auto !important; position: relative; z-index: 14; }
+  #callouts { z-index: 2 !important; pointer-events: none !important; }
+  #callouts .co-icon, #callouts .co-name { pointer-events: auto; }
+
+  /* 14: Codex flyout — glyph on top (shrink/remove circle), body full width below; clear exit */
+  #codex .cx-tab {
+    flex-direction: column !important; align-items: stretch !important;
+    width: min(100vw - 16px, 520px) !important; max-height: 78vh !important;
+    padding: 18px 16px 20px !important; gap: 10px !important;
+  }
+  #codex .cx-ill {
+    flex: 0 0 auto !important; width: 72px !important; height: 72px !important;
+    align-self: center !important; border-radius: 50% !important;
+    aspect-ratio: auto !important; margin: 0 auto 4px;
+  }
+  #codex .cx-num { width: 78% !important; }
+  #codex .cx-body { width: 100% !important; padding: 0 !important; overflow: auto; max-height: 52vh; }
+  #codex .cx-x {
+    position: absolute !important; right: 10px !important; top: 10px !important;
+    z-index: 3; padding: 8px 12px !important;
+    background: rgba(20,12,7,.85) !important; border: 1px solid #e8c27a !important; color: #f3cf8a !important;
+  }
+  /* Same clear exit affordance on all flyouts */
+  #dtab .dt-x, #btab .bt-x, #tale .tl-x, #credits .cr-x, #hist .ev-x, #hist .c-x {
+    padding: 8px 12px !important;
+    background: rgba(20,12,7,.85) !important; border: 1px solid rgba(232,194,122,.55) !important; color: #f3cf8a !important;
+  }
+
+  /* 15: larger mobile top nav; drop Reset to free space */
+  #ui .modes button, #hist .h-modes button {
+    font-size: 11px !important; letter-spacing: .1em !important; padding: 9px 10px !important;
+  }
+  #ui .modes button[data-act=reset] { display: none !important; }
+}
+
+
+/* ===== v14b: mobile stack hit-testing (CRITICAL) ===== */
+/* Labels / callout layer must NEVER steal taps from the right-side icon stack */
+#hist .labels, #hist .labels * { pointer-events: none !important; }
+#callouts { pointer-events: none !important; }
+#callouts .co-g { pointer-events: none !important; }
+/* only the actual icon/name buttons accept taps, and only when they don't sit on the stack */
+#callouts .co-icon, #callouts .co-name { pointer-events: auto; }
+body::after, body.history::after { pointer-events: none !important; }
+#btlink, #taletip, #v7toast, #vverse, .ev-strip, #hist .ev-strip { pointer-events: none !important; }
+
+/* Stack + presenter always above callouts/labels/gradient */
+#tools, #tools.v10,
+#ev-sheet-btn, #presenter-btn,
+#codex-btn, #dtab-btn, #quiz-btn, #tales-btn {
+  pointer-events: auto !important;
+  z-index: 30 !important;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(232,194,122,.25);
+}
+#tools .clay-btn, #tools.v10 .clay-btn, #ev-sheet-btn.clay-btn {
+  pointer-events: auto !important;
+  position: relative;
+  z-index: 31 !important;
+  touch-action: manipulation;
+}
+#ui .modes, #hist .h-modes { z-index: 32 !important; pointer-events: none; }
+#ui .modes button, #hist .h-modes button { pointer-events: auto !important; z-index: 33; touch-action: manipulation; }
+
+@media (max-width: 600px), (max-height: 450px) and (orientation: landscape) {
+  /* Keep callout column OFF the right edge so it can't cover the stack */
+  #callouts .co-g, .co-g {
+    right: auto !important; left: 8px !important;
+    align-items: flex-start !important;
+    bottom: 110px !important; top: auto !important;
+    max-width: 48vw !important;
+    pointer-events: none !important;
+  }
+  #callouts .co-lbl { text-align: left !important; pointer-events: none !important; }
+  #callouts .co-icon, #callouts .co-name { pointer-events: auto; }
+
+  /* Event lives in #tools now — style it as the 5th stack icon */
+  #tools #ev-sheet-btn, #ev-sheet-btn {
+    position: relative !important;
+    top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
+    width: 40px !important; height: 40px !important;
+    margin: 0 !important; order: 5;
+  }
+  body.history #tools #ev-sheet-btn,
+  body.history #ev-sheet-btn {
+    display: flex !important; align-items: center; justify-content: center;
+  }
+  /* Presenter: still show Event if history is active underneath */
+  body.presenting.history #ev-sheet-btn { display: flex !important; z-index: 45 !important; }
+  body.presenting #presenter-btn { z-index: 45 !important; }
+  body.presenting #presenter .pr-prev,
+  body.presenting #presenter .pr-next,
+  body.presenting #presenter .pr-bar button {
+    pointer-events: auto !important; z-index: 46 !important; touch-action: manipulation;
+  }
+
+  /* Ensure closed flyouts never intercept (opacity 0 panels can still eat taps if pointer-events left on) */
+  #codex:not(.on), #dtab:not(.on), #btab:not(.on), #quiz:not(.on),
+  #tale:not(.on), #talelist:not(.on), #credits:not(.on), #srcpan:not(.on),
+  #statue-menu:not(.on) {
+    pointer-events: none !important; visibility: hidden;
+  }
+  #codex:not(.on) *, #dtab:not(.on) *, #quiz:not(.on) *, #tale:not(.on) *, #talelist:not(.on) * {
+    pointer-events: none !important;
+  }
+}
+/* tales flame qi */
+
+#tools .clay-btn .qi, #tales-btn .qi, #quiz-btn .qi, #ev-sheet-btn .qi {
+  width: 18px; height: 18px; display: block;
+  fill: none; stroke: #22130a; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}

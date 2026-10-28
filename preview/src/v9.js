@@ -38,11 +38,13 @@ export function createV9({ director, history, v7, params }) {
   function syncDrone() { const d = history.drone; if (!d) return; const want = soundOn && started && history.active; if (want && !d.on) d.toggle(); else if (!want && d.on) d.mute(); }
   function setSound(on) {
     soundOn = on; try { localStorage.setItem(SK, on ? 'on' : 'off'); } catch (e) { }
-    if (!started && on) start(); if (ctx) { ctx.resume(); master.gain.setTargetAtTime(on ? 1 : 0, ctx.currentTime, .05); }
-    // v13: sound off mutes narration AND music/ambience (master + any HTML audio + TTS)
-    if (window.__vo) window.__vo.muted = !on;
+    if (!started && on) start(); if (ctx) { ctx.resume(); master.gain.setTargetAtTime(on ? 1 : 0, ctx.currentTime, .04); }
+    // v14: sound off mutes narration AND music/ambience — verify every path
+    if (window.__vo) { window.__vo.muted = !on; if (!on) { try { window.__vo.pause(); } catch (e) {} } }
     if (!on && window.speechSynthesis) speechSynthesis.cancel();
-    document.querySelectorAll('audio').forEach(a => { a.muted = !on; });
+    document.querySelectorAll('audio').forEach(a => { a.muted = !on; if (!on) { try { a.pause(); } catch (e) {} } });
+    // also zero any WebAudio bed voices immediately
+    if (ctx && !on) { for (const f in voices) { try { voices[f].g.gain.setTargetAtTime(0, ctx.currentTime, .02); voices[f].tgt = 0; } catch (e) {} } }
     syncDrone(); document.querySelectorAll('.snd, #snd-g').forEach(b => { b.classList.toggle('on', on); b.title = on ? 'Sound on' : 'Sound off'; });
   }
   // first gesture starts audio (browser autoplay rules); sound is on unless the visitor turned it off
@@ -98,9 +100,8 @@ export function createV9({ director, history, v7, params }) {
       const m = mode();
       if (history.active && m !== lastMode) window.__v9narr && window.__v9narr();
       lastMode = m;
-      // beasts rise on their plinths for their empire's turn in History
-      const B = window.beasts; if (B) { const want = history.active ? history.metal : null;
-        for (const id in B.items) { const it = B.items[id]; if (!it.model) continue; const goal = want && it.sec === want ? 4.2 : 0; it.lift = (it.lift || 0) + (goal - (it.lift || 0)) * Math.min(1, dt * 1.6); it.model.position.y = 1.6 + it.lift; } }
+      // v14: History rise/seat is owned by beasts.js (world-bbox snap). Do not lift model.y here — it floated beasts.
+      const B = window.beasts;
       if (!ctx) return;
       syncDrone();
       const vo = window.__vo, speaking = (vo && !vo.paused && !vo.ended) || (window.speechSynthesis && speechSynthesis.speaking);

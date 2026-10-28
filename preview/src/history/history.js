@@ -44,6 +44,9 @@ export async function createHistory({ world, statue, director, params }) {
   const sheetBtn = document.createElement('button'); sheetBtn.id = 'ev-sheet-btn'; sheetBtn.className = 'clay-btn'; sheetBtn.innerHTML = '<svg viewBox="0 0 24 24" class="qi" aria-hidden="true"><path d="M7 3.5h8.5c1.2 0 2.2 1 2.2 2.2v12.6c0 1.2-1 2.2-2.2 2.2H7c-1.2 0-2.2-1-2.2-2.2V5.7C4.8 4.5 5.8 3.5 7 3.5z"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h5"/></svg><b>Event</b>'; sheetBtn.title = 'Open event card'; sheetBtn.type = 'button'; sheetBtn.setAttribute('aria-label', 'Open event card');
   const strip = document.createElement('div'); strip.className = 'ev-strip'; strip.id = 'ev-strip';
   document.body.appendChild(sheetBtn); document.body.appendChild(strip);
+  // v14: park Event in the tools stack when available so mobile hit-testing matches the icon column
+  const parkEv = () => { const tools = document.getElementById('tools'); if (tools && sheetBtn.parentNode !== tools) tools.appendChild(sheetBtn); };
+  parkEv(); setTimeout(parkEv, 0); setTimeout(parkEv, 500);
 
   const cardEl = root.querySelector('.card');
   if (cardEl && !cardEl.querySelector('.c-x')) {
@@ -53,7 +56,8 @@ export async function createHistory({ world, statue, director, params }) {
     cx.addEventListener('click', e => { e.stopPropagation(); closeCard(); });
     document.addEventListener('pointerdown', e => {
       if (!cardEl.classList.contains('on') && !cardEl.classList.contains('sheet-on')) return;
-      if (e.target.closest('.card, #ev-sheet-btn, .ev-btn, .h-timeline, .h-ctrl')) return;
+      // Closing evidence (or clicking inside it) must NOT close the event card
+      if (e.target.closest('.card, #ev-sheet-btn, .ev-btn, .h-timeline, .h-ctrl, .evidence, [data-a=evidence], [data-a=evclose]')) return;
       closeCard();
     });
   }
@@ -89,7 +93,8 @@ export async function createHistory({ world, statue, director, params }) {
   // v10: playback is event-driven. It glides to the next event, then holds there until the narration for that event has
   // finished (never cutting a voice off), then continues on its own. No extra presses needed.
   function play() {
-    setFree(false); closeEvidence(); st.playing = true; root.classList.add('playing'); q('[data-a=play]').classList.add('on'); q('.pp-state').textContent = 'Playing'; q('[data-a=play]').title = 'Pause (Space)';
+    setFree(false); closeEvidence(); clearTimeout(api._narrT); api._narrTok++; // cancel pending idle-speak; play/dwell owns narration
+    st.playing = true; root.classList.add('playing'); q('[data-a=play]').classList.add('on'); q('.pp-state').textContent = 'Playing'; q('[data-a=play]').title = 'Pause (Space)';
     if (st.s >= N - 1.001) { st.s = 0; setS(0); }
     const from = Math.floor(st.s + 1e-3);
     if (st.s - from > .001) playTl = gsap.to(st, { s: from + 1, duration: 6 * (1 - (st.s - from)), ease: 'none', onUpdate: () => setS(st.s), onComplete: () => dwell(true) });
@@ -164,7 +169,18 @@ export async function createHistory({ world, statue, director, params }) {
     const m = MOOD[e.metal]; gsap.to(world.scene.fog.color, { ...hex(m.fog), duration: 2.5 });
     gsap.to(hemi.color, { ...hex(m.hemi), duration: 2.5 }); gsap.to(key.color, { ...hex(m.key), duration: 2.5 });
     gsap.to(map.uniforms.uAmb.value, { x: m.amb[0], y: m.amb[1], z: m.amb[2], duration: 2.5 });
-    drone.setEra(e.metal); if (prevMetal === e.metal) drone.event(); if (api.onEvent && st.active && !st.playing) setTimeout(() => !st.playing && Math.round(st.s) === idx && api.onEvent(idx), 400);
+    drone.setEra(e.metal); if (prevMetal === e.metal) drone.event();
+    // Speak once after camera settles; cancel any prior pending speak (guards double-start from Assembled/Exploded enter)
+    if (api.onEvent && st.active && !st.playing && !window.__presenter) {
+      clearTimeout(api._narrT);
+      const tok = ++api._narrTok;
+      api._narrT = setTimeout(() => {
+        if (api._narrTok !== tok || !st.active || st.playing || window.__presenter) return;
+        if (Math.round(st.s) !== idx) return;
+        if (api.spokenAt === idx) return; // already spoken this event
+        api.onEvent(idx);
+      }, st.intro < 1 ? 900 : 700);
+    }
     root.querySelectorAll('.band').forEach(b => b.classList.toggle('cur', b.dataset.m === e.metal));
     // v6: tight spotlight on the active section
     const sec = statue.sections[e.metal]; activeSec = sec;
@@ -179,7 +195,8 @@ export async function createHistory({ world, statue, director, params }) {
   function hideCaps(hide) { try { const st = window.__statue || statue; if (!st) return; st.root && st.root.traverse(o => { if (o.isMesh && /^cap_/.test(o.name || '')) { o.visible = !hide ? true : false; if (hide && o.material) { const m = o.material; if (m.color) m.color.setHex(0x140e0a); if ('emissive' in m) m.emissive.setHex(0x000000); if (m.userData && m.userData.capU && m.userData.capU.uGlow) m.userData.capU.uGlow.value.setRGB(0,0,0); m.envMapIntensity = 0; m.needsUpdate = true; } } }); } catch (e) {} }
   function enter(instant) { if (world.topKey) { gsap.killTweensOf(world.topKey); world.topKey.intensity = 0; }
     st.active = true; document.body.classList.add('history'); director.historyMode = true; director.ui.hidePanel(); root.classList.add('on'); hideCaps(true);
-    curEv = -1; setFree(params.has('free') && instant); setS(st.s);
+    curEv = -1; api.spokenAt = null; clearTimeout(api._narrT); api._narrTok++;
+    setFree(params.has('free') && instant); setS(st.s);
     gsap.to(hemi, { intensity: .16, duration: 1.5 }); gsap.to(key, { intensity: 7.5, duration: 1.5 });
     if (instant) statue.root.scale.setScalar(HS); else gsap.to(statue.root.scale, { x: HS, y: HS, z: HS, duration: 2.5, ease: 'power2.inOut' });
     if (!instant && !params.has('intro')) { st.intro = 0; world.camera.position.copy(INTRO_CAM.pos); world.controls.target.copy(INTRO_CAM.target); gsap.to(st, { intro: 1, duration: 6.5, ease: 'power2.inOut', delay: .8 }); }
@@ -228,6 +245,6 @@ export async function createHistory({ world, statue, director, params }) {
   function canvasClick() { }
   // v12 presenter: eased jump to one event, no autoplay
   function goTo(i, instant) { pause(); setFree(false); gsap.killTweensOf(st, 's'); if (instant) setS(i); else gsap.to(st, { s: i, duration: Math.min(4, 1.6 + Math.abs(st.s - i) * .35), ease: 'power2.inOut', onUpdate: () => setS(st.s) }); }
-  const api = { goTo, drone, enter, exit, update, map, st, canvasClick, pause, play, refreshCard: () => { const c = curEv; curEv = -1; if (c >= 0) showEvent(c); }, get active() { return st.active; }, get calloutSection() { return st.active ? activeSec : null; }, get calloutAlpha() { if (st.free || st.intro < 1) return 0; if (params.has('co')) return 1; const u = (performance.now() - (st.coT || -1e9)) / 1000; return u < .6 ? 0 : u < 1.4 ? (u - .6) / .8 : u < 4.6 ? 1 : Math.max(0, 1 - (u - 4.6) / 1.2); }, get metal() { return st.active && curEv >= 0 ? events[curEv].metal : null; }, events };
+  const api = { _narrTok: 0, _narrT: null, goTo, drone, enter, exit, update, map, st, canvasClick, pause, play, refreshCard: () => { const c = curEv; curEv = -1; if (c >= 0) showEvent(c); }, get active() { return st.active; }, get calloutSection() { return st.active ? activeSec : null; }, get calloutAlpha() { if (st.free || st.intro < 1) return 0; if (params.has('co')) return 1; const u = (performance.now() - (st.coT || -1e9)) / 1000; return u < .6 ? 0 : u < 1.4 ? (u - .6) / .8 : u < 4.6 ? 1 : Math.max(0, 1 - (u - 4.6) / 1.2); }, get metal() { return st.active && curEv >= 0 ? events[curEv].metal : null; }, events };
   return api;
 }

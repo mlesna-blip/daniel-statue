@@ -32,7 +32,14 @@ export async function createV7({ world, director, history, callouts, glyphs, sta
   const dPan = $(`<aside id="dtab"><div class="dt-h">The Hidden Tablet</div><div class="dt-sub">Ten wedge-signs are hidden around the vision. Find them all.</div><div class="dt-grid">${SPOTS.map(([id, n, d]) => `<div class="dt-slot" data-id="${id}">${DINGIR_SVG}<b>${esc(n)}</b><i>${esc(d)}</i></div>`).join('')}</div><div class="dt-done">“The God of heaven shall set up a kingdom, which shall never be destroyed.” · Daniel 2:44</div><button class="ghost dt-x">Close</button></aside>`); document.body.appendChild(dPan);
   function renderTablet() { dBtn.querySelector('span').innerHTML = `<em>${found.size}</em> / ${SPOTS.length}`; dPan.querySelectorAll('.dt-slot').forEach(s => s.classList.toggle('on', found.has(s.dataset.id))); dPan.classList.toggle('complete', found.size === SPOTS.length); }
   function discover(id) { if (found.has(id)) return false; found.add(id); try { localStorage.setItem(KEY, JSON.stringify([...found])); } catch (e) { } renderTablet(); dBtn.classList.remove('pulse'); void dBtn.offsetWidth; dBtn.classList.add('pulse'); toast(`Wedge-sign found: ${SPOTS.find(s => s[0] === id)[1]} · ${found.size}/${SPOTS.length}`); return true; }
-  dBtn.onclick = () => dPan.classList.toggle('on'); dPan.querySelector('.dt-x').onclick = () => dPan.classList.remove('on'); renderTablet();
+  dBtn.onclick = e => { e.stopPropagation(); dPan.classList.toggle('on'); };
+  dPan.querySelector('.dt-x').onclick = () => dPan.classList.remove('on');
+  document.addEventListener('pointerdown', e => {
+    if (!dPan.classList.contains('on')) return;
+    if (e.target.closest('#dtab, #dtab-btn')) return;
+    dPan.classList.remove('on');
+  }, true);
+  renderTablet();
   const toastEl = $(`<div id="v7toast"></div>`); document.body.appendChild(toastEl);
   function toast(t) { toastEl.textContent = t; toastEl.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => toastEl.classList.remove('on'), 2600); }
   // 3D hidden signs: platform corner, Ur on the map, above the head (exploded only)
@@ -97,7 +104,13 @@ export async function createV7({ world, director, history, callouts, glyphs, sta
   function closeCodex() { cx.classList.remove('on'); paused = false; }
   cx.addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b && caught.has(b.dataset.n)) openCodex(b.dataset.n); if (e.target.closest('.cx-x') || e.target === cx) closeCodex(); });
   function renderCodexBtn() { cxBtn.querySelector('span').innerHTML = `<em>${caught.size}</em> / 7`; }
-  cxBtn.onclick = () => openCodex([...caught][0] || '7'); renderCodexBtn();
+  cxBtn.onclick = e => { e.stopPropagation(); if (cx.classList.contains('on')) closeCodex(); else openCodex([...caught][0] || '7'); }; renderCodexBtn();
+  // tap outside closes codex
+  document.addEventListener('pointerdown', e => {
+    if (!cx.classList.contains('on')) return;
+    if (e.target.closest('#codex .cx-tab, #codex-btn')) return;
+    closeCodex();
+  }, true);
   addEventListener('keydown', e => { if (e.key === 'Escape') { closeCodex(); closeBeast(); dPan.classList.remove('on'); } });
 
   // ---------- narration (v10): one dropdown chooses who speaks: off, the three guides, the Bible (KJV) or Kids.

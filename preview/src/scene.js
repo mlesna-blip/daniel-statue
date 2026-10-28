@@ -220,7 +220,7 @@ export function createWorld(container) {
     const p = new THREE.Points(g, new THREE.PointsMaterial({ size, map: radialSprite(col, 32), transparent: true, opacity: op, depthWrite: false, blending: blend, color: 0xffffff })); scene.add(p); return p;
   };
   const embers = mk('rgba(255,190,120,1)', THREE.AdditiveBlending, .5, .3, 150);
-  const ash = mk('rgba(18,12,8,1)', THREE.NormalBlending, 1.1, .55, 280);
+  const ash = mk('rgba(72,58,42,1)', THREE.NormalBlending, 1.6, .78, 420);
 
   // post
   const composer = new EffectComposer(renderer); composer.addPass(new RenderPass(scene, camera));
